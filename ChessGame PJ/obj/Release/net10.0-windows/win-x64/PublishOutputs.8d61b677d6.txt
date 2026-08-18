@@ -1,0 +1,2 @@
+C:\Users\ACER\source\repos\ChessGame PJ\ChessGame PJ\bin\Release\net10.0-windows\win-x64\publish\Cờ vua vip pro.pdb
+C:\Users\ACER\source\repos\ChessGame PJ\ChessGame PJ\bin\Release\net10.0-windows\win-x64\publish\Cờ vua vip pro.exe
