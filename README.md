@@ -197,6 +197,6 @@ ChessGame/
 
 ## 📄 Bản quyền & Tác giả
 
-- **Tác giả:** [Long9boy](https://github.com/Long9boy)
+- **Tác giả:** [Long9boy](https://github.com/Long9boy) x CNTT team
 - **Dự án:** ChessGame PJ - Cờ Vua VIP Pro
 - Mọi đóng góp, báo lỗi (Issues) hoặc Pull Request đều được hoan nghênh tại [GitHub Repository](https://github.com/Long9boy/ChessGame).
