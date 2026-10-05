@@ -1,0 +1,22 @@
+﻿<Window x:Class="ChessGame_PJ.Views.PromotionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Phong Tốt" Height="200" Width="360"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#1E1C2E">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Chọn Quân Cờ Để Phong Cấp:"
+                   FontSize="16" FontWeight="Bold"
+                   Foreground="White"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,16"/>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" x:Name="pnlPieces"/>
+    </Grid>
+</Window>

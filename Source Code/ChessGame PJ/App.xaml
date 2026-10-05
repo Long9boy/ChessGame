@@ -1,0 +1,109 @@
+﻿<Application x:Class="ChessGame_PJ.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="src/Views/LobbyWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <!-- Global Theme Colors -->
+            <SolidColorBrush x:Key="BgDarkBrush" Color="#1E1C2E" />
+            <SolidColorBrush x:Key="BgCardBrush" Color="#2A2744" />
+            <SolidColorBrush x:Key="BgInputBrush" Color="#373456" />
+            <SolidColorBrush x:Key="AccentGoldBrush" Color="#FFD700" />
+            <SolidColorBrush x:Key="AccentCyanBrush" Color="#00E5FF" />
+            <SolidColorBrush x:Key="AccentGreenBrush" Color="#00E676" />
+            <SolidColorBrush x:Key="TextPrimaryBrush" Color="#FFFFFF" />
+            <SolidColorBrush x:Key="TextSecondaryBrush" Color="#A5A2C2" />
+
+            <!-- Default Button Style -->
+            <Style x:Key="ModernButtonStyle" TargetType="Button">
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Opacity" Value="0.9" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Opacity" Value="0.75" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="border" Property="Opacity" Value="0.5" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Rounded TextBox Style -->
+            <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+                <Setter Property="Background" Value="#373456" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="BorderBrush" Value="#54507A" />
+                <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="Padding" Value="10,6" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="TextBox">
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="8">
+                                <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsFocused" Value="True">
+                                    <Setter TargetName="border" Property="BorderBrush" Value="#00E5FF" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Rounded PasswordBox Style -->
+            <Style x:Key="ModernPasswordBoxStyle" TargetType="PasswordBox">
+                <Setter Property="Background" Value="#373456" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="BorderBrush" Value="#54507A" />
+                <Setter Property="BorderThickness" Value="1.5" />
+                <Setter Property="Padding" Value="10,6" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="PasswordBox">
+                            <Border x:Name="border"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="8">
+                                <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsFocused" Value="True">
+                                    <Setter TargetName="border" Property="BorderBrush" Value="#00E5FF" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

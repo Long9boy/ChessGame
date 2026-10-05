@@ -1,0 +1,68 @@
+<Window x:Class="ChessGame_PJ.Views.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Đăng Ký Tài Khoản" Height="500" Width="420"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Icon="/assets/app_icon.png"
+        Background="#1E1C2E">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="ĐĂNG KÝ TÀI KHOẢN"
+                   FontSize="20" FontWeight="Bold"
+                   Foreground="#00E5FF"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,16"/>
+
+        <!-- Username -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,10">
+            <TextBlock Text="Tên tài khoản (viết liền, không dấu):" Foreground="#A5A2C2" FontSize="13" Margin="0,0,0,4"/>
+            <TextBox x:Name="txtUsername" Height="36" Style="{StaticResource ModernTextBoxStyle}"/>
+        </StackPanel>
+
+        <!-- Display name -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,10">
+            <TextBlock Text="Tên hiển thị (biệt danh trong game):" Foreground="#A5A2C2" FontSize="13" Margin="0,0,0,4"/>
+            <TextBox x:Name="txtDisplayName" Height="36" Style="{StaticResource ModernTextBoxStyle}"/>
+        </StackPanel>
+
+        <!-- Password -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,10">
+            <TextBlock Text="Mật khẩu:" Foreground="#A5A2C2" FontSize="13" Margin="0,0,0,4"/>
+            <PasswordBox x:Name="txtPassword" Height="36" Style="{StaticResource ModernPasswordBoxStyle}"/>
+        </StackPanel>
+
+        <!-- Confirm Password -->
+        <StackPanel Grid.Row="4" Margin="0,0,0,10">
+            <TextBlock Text="Nhập lại mật khẩu:" Foreground="#A5A2C2" FontSize="13" Margin="0,0,0,4"/>
+            <PasswordBox x:Name="txtConfirmPassword" Height="36" Style="{StaticResource ModernPasswordBoxStyle}"/>
+        </StackPanel>
+
+        <!-- Error message -->
+        <TextBlock x:Name="lblError" Grid.Row="5" Foreground="#FF5252" FontSize="12" Margin="0,0,0,10" TextWrapping="Wrap"/>
+
+        <!-- Register button -->
+        <Button x:Name="btnRegister" Grid.Row="6" Content="Tạo Tài Khoản" Height="40"
+                Style="{StaticResource ModernButtonStyle}"
+                Background="#00E676" Foreground="#121212"
+                FontWeight="Bold" FontSize="15"
+                Click="BtnRegister_Click" Margin="0,0,0,8"/>
+
+        <!-- Back to login button -->
+        <Button x:Name="btnBackToLogin" Grid.Row="7" Content="Quay lại Đăng nhập" Height="32"
+                Style="{StaticResource ModernButtonStyle}"
+                Background="Transparent" BorderThickness="0"
+                Foreground="#00E5FF" FontSize="13"
+                Click="BtnBackToLogin_Click"/>
+    </Grid>
+</Window>

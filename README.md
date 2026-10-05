@@ -1,128 +1,202 @@
-# ♟️ Chess Game PJ
+# ♟️ Cờ Vua VIP Pro (Chess Game PJ)
 
-An online 2-player chess game for Windows, built with **C# / .NET 10 (WinForms)** and synchronized in real time through **Firebase Realtime Database**. Two players on two different machines — no shared LAN required — connect through a simple 6-digit room code and play a full, rules-accurate game of chess.
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20x64-blue.svg)](https://www.microsoft.com/windows)
+[![UI](https://img.shields.io/badge/UI-WPF%20XAML-00d2ff.svg)](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/)
+[![Engine](https://img.shields.io/badge/Engine-Stockfish%2016-green.svg)](https://stockfishchess.org/)
+[![Database](https://img.shields.io/badge/Online-Firebase%20RTDB-FFA000.svg)](https://firebase.google.com/)
 
-**Repository:** https://github.com/Long9boy/ChessGame
+Game Cờ Vua hiện đại trên nền tảng **Windows Desktop** được phát triển bằng **C# / .NET 10** và giao diện **WPF (XAML)** phong cách Dark Esports / Sci-Fi. Ứng dụng tích hợp công cụ AI **Stockfish**, hệ thống bình luận viên giọng nói thông minh, chế độ chơi Online qua **Firebase Realtime Database**, tính điểm **ELO**, hệ thống bạn bè và bảng xếp hạng trực tuyến.
+
+Toàn bộ trò chơi được đóng gói thành một file **Single-File Executable (`Cờ vua vip pro.exe`) duy nhất** (~240MB, tự chứa .NET Runtime, Stockfish Engine, video nền, âm thanh và voice pack), tải về là có thể chơi ngay lập tức không cần cài đặt thêm bất kỳ phần mềm nào.
 
 ---
 
-## ✨ Features
+## 🎮 Tải về & Chơi ngay
 
-- **Complete standard chess rules**, implemented and verified from scratch:
-  - Legal move generation for all pieces (pawn, knight, bishop, rook, queen, king)
-  - Check and checkmate detection
-  - Castling (kingside & queenside) with full legality checks
-  - Pawn promotion with a piece-selection dialog (Queen / Rook / Bishop / Knight)
-- **Real online multiplayer** over the internet via Firebase Realtime Database (REST API) — no dedicated game server needed
-- **Room-based matchmaking**: create a room (become White) or join one with a code (become Black)
-- **Live visual feedback**: selected-square highlight, move-hint dots, red king highlight when in check, and real-time player name/turn updates
-- **Self-contained build**: all 12 piece images are embedded resources baked into the `.exe`, so the app ships as a single file with no external asset folder
+Bạn có thể tải trực tiếp file game tại thư mục gốc của repository:
+👉 **[`Cờ vua vip pro.exe`](https://github.com/Long9boy/ChessGame/raw/main/C%E1%BB%9D%20vua%20vip%20pro.exe)**
 
-## 🖥️ Screens
+> [!TIP]
+> Tải file về máy Windows 10/11 (64-bit), nhấp đúp để mở và chơi ngay! Không yêu cầu cài đặt .NET SDK hay runtime bên ngoài.
 
-| Screen | Description |
-|---|---|
-| **Form2 — Lobby** | Enter your name, then **Create Room** (generates a random room code, you play White) or **Join Room** (enter an existing code, you play Black) |
-| **Form1 — Board** | An 8x8 grid of buttons representing the board; click a piece to see legal moves, click a highlighted square to move |
+---
 
-## 🏗️ Tech Stack
+## ✨ Tính năng nổi bật
 
-| Component | Technology | Role |
-|---|---|---|
-| Language | C# (.NET 10) | Core application language |
-| UI | Windows Forms (WinForms) | Desktop windows, 8x8 board, promotion dialog |
-| Online data | Firebase Realtime Database (REST API) | Stores room state, syncs moves between players |
-| Networking | `HttpClient` + `System.Text.Json` | Sends/receives JSON to Firebase (`GET`, `PUT`, `PATCH`) |
-| Assets | Embedded Resource (PNG) | 12 chess piece images embedded directly into the executable |
+### 1. ♟️ Luật cờ vua quốc tế chuẩn xác 100%
+- Tự phát triển engine kiểm tra tính hợp lệ của mọi nước đi (Tốt, Mã, Tượng, Xe, Hậu, Vua).
+- **Chiếu & Chiếu bí (Check & Checkmate)**: Đánh dấu đỏ vị trí Vua bị chiếu, tự động khóa bàn cờ khi chiếu bí hoặc hòa cờ.
+- **Nhập thành (Castling)**: Hỗ trợ cả nhập thành gần (O-O) và nhập thành xa (O-O-O) với đầy đủ điều kiện (chưa di chuyển, các ô không bị kiểm soát, không có quân cản).
+- **Phong cấp tốt (Pawn Promotion)**: Hộp thoại trực quan cho phép chọn nâng cấp lên Hậu, Xe, Tượng hoặc Mã.
+- Ngăn chặn triệt để mọi nước đi khiến Vua của mình bị chiếu (tự chiếu).
 
-## 🔁 How Online Sync Works
+### 2. 🤖 Chế độ chơi đa dạng
+- **Chơi Offline với AI (Stockfish)**:
+  - Tích hợp engine cờ vua mạnh nhất thế giới **Stockfish 16**.
+  - Nhiều cấp độ độ khó từ cơ bản đến kiện tướng (Tập sự, Nghiệp dư, Chuyên nghiệp, Đại kiện tướng, Siêu trí tuệ).
+  - Có thể chọn cầm quân Trắng hoặc quân Đen, hỗ trợ lật bàn cờ linh hoạt.
+- **Tìm trận nhanh (Matchmaking)**:
+  - Hệ thống ghép cặp tự động dựa trên ELO tương đồng giữa các người chơi trực tuyến.
+- **Tạo phòng & Tham gia phòng (Custom Room)**:
+  - Tạo phòng với mã số 6 chữ số ngẫu nhiên.
+  - Tùy chỉnh thời gian thi đấu mỗi lượt (1 phút, 3 phút, 5 phút, 10 phút, 15 phút).
+  - Tùy chọn đấu thường (Casual) hoặc đấu xếp hạng (Ranked - tính điểm ELO).
+  - Mời bạn bè trực tiếp từ sảnh chờ vào phòng đấu.
 
-1. Player 1 creates a room → a random 6-digit **Room ID** is generated and the initial game state is written to Firebase with `PUT`.
-2. Player 2 enters that Room ID to join → a `PATCH` updates `player2` in the room data.
-3. While playing, a `Timer` **polls** the room every **1.2 seconds** (`GetAsync`) to refresh the board, current turn, and check status for both players.
-4. Every legal move performed locally is written back to Firebase with `PATCH`, carrying the full updated board state; the opponent picks it up on their next poll.
+### 3. 🎙️ Bình luận viên giọng nói (Voice Pack Commentary)
+- Bình luận viên tiếng Việt tự động phản ứng theo từng diễn biến trận đấu theo thời gian thực:
+  - Nhắc nhở nguyên tắc khai cuộc (Ruy Lopez, Italian Game, phát triển quân nhẹ, cảnh báo xuất Hậu sớm).
+  - Cảm thán nước đi sai lầm nghiêm trọng (Blunder), bỏ lỡ cơ hội chiếu bí (Missed Mate).
+  - Bình luận khi ăn quân giá trị cao (Hậu, Xe, Tượng, Mã).
+  - Cảnh báo khi thời gian thi đấu sắp hết.
 
-```csharp
-RoomData room = await FirebaseClient.GetAsync<RoomData>($"rooms/{roomId}");
+### 4. 👥 Hệ thống tài khoản, Xếp hạng & Bạn bè
+- **Đăng ký / Đăng nhập** nhanh chóng, lưu trữ hồ sơ người chơi an toàn.
+- **Điểm số ELO**: Cập nhật tăng/giảm ELO chuẩn quốc tế sau mỗi trận đấu Ranked.
+- **Bảng xếp hạng (Leaderboard)**: Vinh danh Top người chơi có điểm ELO cao nhất toàn server.
+- **Hệ thống bạn bè**:
+  - Tìm kiếm và kết bạn qua tên người chơi (Username).
+  - Hiển thị trạng thái Online / In-Game theo thời gian thực.
+  - Thông báo huy hiệu số lời mời kết bạn đang chờ xét duyệt.
+  - Mời bạn bè vào phòng thi đấu bằng 1 cú click.
 
-await FirebaseClient.PatchAsync($"rooms/{roomId}", patch); // send the new move
+### 5. 📜 Lịch sử đấu & Xem lại trận đấu (Replay System)
+- Ghi lại toàn bộ biên bản ván đấu theo ký hiệu chuẩn quốc tế (Algebraic Notation).
+- Bộ điều khiển phát lại trận đấu thông minh: **Lùi 1 nước**, **Tiến 1 nước**, **Tự động chạy (Play)**, **Tạm dừng (Pause)**.
+
+### 6. 🎨 Giao diện WPF hiện đại & Hiệu ứng đỉnh cao
+- Giao diện Dark Sci-Fi thiết kế tỉ mỉ, bo góc hiện đại.
+- Video nền hoạt cảnh sảnh chờ (30s Seamless Loop) sống động.
+- Hiệu ứng đổ bóng 3D và bừng sáng (glow) khi rê chuột vào các thẻ game, nút Cài đặt, Bạn bè, Đăng nhập/Đăng xuất.
+- Âm thanh ván đấu chân thực (di chuyển quân cờ, bắt quân, chiếu tướng, nhập thành, thắng/thua).
+
+---
+
+## 🏗️ Kiến trúc hệ thống
+
+```mermaid
+graph TD
+    subgraph UI ["Giao diện người dùng (WPF XAML)"]
+        Lobby[LobbyWindow - Sảnh chờ]
+        Game[GameWindow - Bàn cờ chính]
+        BotSelect[BotSelectWindow - Chọn độ khó Bot]
+        CreateRoom[CreateRoomDialog - Tạo phòng đấu]
+        Invite[InviteFriendDialog - Mời bạn bè]
+        Profile[PlayerProfileDialog - Hồ sơ người chơi]
+        Leaderboard[LeaderboardWindow - Bảng xếp hạng]
+    end
+
+    subgraph Core ["Lõi xử lý trò chơi (Core Engine)"]
+        Rules[ChessGame.cs - Luật cờ vua & kiểm tra nước đi]
+        AppSettings[AppSettings.cs - Cấu hình âm lượng & hiển thị]
+        Models[Data Models - UserData, RoomData, Matchmaking]
+    end
+
+    subgraph Services ["Các dịch vụ nền tảng (Services)"]
+        Auth[AuthService - Đăng nhập & Đăng ký]
+        Firebase[FirebaseClient - Đồng bộ Realtime Database]
+        Friend[FriendService - Kết bạn & Lời mời]
+        History[HistoryService - Lưu trữ lịch sử đấu]
+        Sound[SoundService - Quản lý hiệu ứng âm thanh]
+        Speech[SpeechService - Bình luận viên thông minh]
+    end
+
+    subgraph External ["Tài nguyên bên ngoài"]
+        Stockfish[Stockfish 16 Engine]
+        FirebaseCloud[Firebase Realtime Database]
+        AudioFiles[Sound Effects & Voice Pack WAV]
+    end
+
+    Lobby --> Auth
+    Lobby --> Friend
+    Lobby --> Firebase
+    Game --> Rules
+    Game --> Sound
+    Game --> Speech
+    Game --> Stockfish
+    Rules --> Models
+    Firebase --> FirebaseCloud
+    Sound --> AudioFiles
+    Speech --> AudioFiles
 ```
 
-## 🧠 Core Algorithm
+---
 
-The rules engine lives in `ChessGame.cs`. The board is a `string[8,8]` array, where each cell holds a piece code such as `"W_Pawn"` or `"B_King"`, or an empty string for an empty square.
-
-1. **`GetPseudoMoves()`** — generates every geometrically valid move per piece type (pawn pushes/captures, knight L-shapes, sliding pieces via `Slide()`, king moves + castling), without yet checking for check.
-2. **`GetLegalMoves()`** — for each pseudo-move, simulates it on a cloned board (`CloneBoard`) and keeps it only if it doesn't leave the mover's own king in check (`IsInCheck`).
-3. **`IsSquareAttacked()` / `IsInCheck()` / `IsCheckmate()`** — determine whether a square is under attack, whether the king is in check, and whether that check is inescapable (no legal moves remain).
-4. **Castling & promotion** are handled as special cases with their own condition checks and, for promotion, a two-step flow (`TryMove()` flags `NeedsPromotion`, then is called again once the player picks a piece).
-
-## 📁 Project Structure
+## 📁 Cấu trúc thư mục mã nguồn
 
 ```
-ChessGame PJ/
-├── ChessGame PJ.slnx              # Solution file
-└── ChessGame PJ/
-    ├── ChessGame.cs                # Chess rules engine (moves, check, checkmate, castling, promotion)
-    ├── FirebaseClient.cs           # REST client for Firebase Realtime Database (GET/PUT/PATCH)
-    ├── RoomData.cs                 # Data model for a game room, synced via Firebase
-    ├── ImageResources.cs           # Loads embedded piece images
-    ├── Form1.cs / Form1.Designer.cs   # Main board screen
-    ├── Form2.cs / Form2.Designer.cs   # Lobby screen (create/join room)
-    ├── PromotionForm.cs            # Pawn promotion piece-picker dialog
-    ├── Program.cs                  # Application entry point
-    ├── assets/textures/            # Embedded piece artwork (12 PNGs)
-    └── Resources/                  # Additional bundled resources
+ChessGame/
+├── Cờ vua vip pro.exe               # File chạy duy nhất (Single-file Release)
+├── README.md                       # Tài liệu hướng dẫn dự án
+├── .gitignore                      # Cấu hình bỏ qua file build/tạm thời
+├── .gitattributes                  # Cấu hình Git LFS cho file nhị phân lớn (.exe)
+└── Source Code/                    # Toàn bộ mã nguồn dự án
+    ├── ChessGame PJ.slnx           # File Solution của Visual Studio
+    └── ChessGame PJ/
+        ├── ChessGame PJ.csproj     # File cấu hình dự án .NET 10 WPF
+        ├── App.xaml / App.xaml.cs  # Điểm khởi chạy ứng dụng WPF
+        ├── assets/                 # Toàn bộ tài nguyên game
+        │   ├── engine/             # Stockfish 16 Engine (.exe)
+        │   ├── sounds/             # Âm thanh di chuyển, cờ, voice pack
+        │   ├── textures/           # Ảnh quân cờ, nút bấm, background
+        │   └── videos/             # Video nền sảnh chờ (lobby_loop.mp4)
+        └── src/
+            ├── Core/               # Engine luật cờ, AI bot, dữ liệu cấu hình
+            ├── Services/           # Dịch vụ Firebase, Auth, Friends, Audio
+            └── Views/              # Toàn bộ giao diện XAML và Code-behind
 ```
 
-## 🚀 Getting Started
+---
 
-### Prerequisites
+## 🚀 Hướng dẫn biên dịch từ mã nguồn
 
-- Windows 10/11
-- [.NET 10 SDK](https://dotnet.microsoft.com/download) with the Windows Desktop workload
-- A Firebase project with a **Realtime Database** in test mode (open read/write rules), since the app talks to it via plain REST calls without an auth token
+### Yêu cầu hệ thống
+- Hệ điều hành: **Windows 10 / 11 (64-bit)**
+- **[.NET 10.0 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)** (với Desktop Workload)
+- **Visual Studio 2026** (hoặc mới hơn) hỗ trợ .NET 10 Desktop Development
 
-### Setup
+### Các bước thực hiện
 
-1. Clone the repository:
+1. **Clone repository về máy:**
    ```bash
    git clone https://github.com/Long9boy/ChessGame.git
    cd ChessGame
    ```
-2. In `FirebaseClient.cs`, set `DatabaseUrl` to your own Firebase Realtime Database URL:
-   ```csharp
-   private const string DatabaseUrl = "https://<your-project>-default-rtdb.<region>.firebasedatabase.app";
-   ```
-3. Build and run:
+
+2. **Mở dự án:**
+   Mở file [`Source Code/ChessGame PJ.slnx`](Source%20Code/ChessGame%20PJ.slnx) bằng Visual Studio hoặc sử dụng lệnh:
    ```bash
+   cd "Source Code"
    dotnet build "ChessGame PJ.slnx"
-   dotnet run --project "ChessGame PJ"
    ```
 
-### Playing
+3. **Chạy ứng dụng chế độ Debug:**
+   ```bash
+   dotnet run --project "ChessGame PJ/ChessGame PJ.csproj"
+   ```
 
-1. Launch the app on two machines (or two instances for local testing).
-2. On the first instance, enter a name and click **Create Room** — note the generated room code.
-3. On the second instance, enter a name, click **Join Room**, and enter that code.
-4. Play chess! The board, turns, and check status stay in sync automatically.
+4. **Xuất bản thành 1 file EXE độc lập (Self-Contained Single File):**
+   ```bash
+   dotnet publish "ChessGame PJ/ChessGame PJ.csproj" -c Release -r win-x64 -o "../publish"
+   ```
+   File `Cờ vua vip pro.exe` hoàn chỉnh sẽ được tạo trong thư mục `publish/`.
 
-## ⚠️ Known Limitations
+---
 
-- Sync uses periodic polling (1.2s) rather than a real-time listener/WebSocket, so there can be a small delay
-- En passant capture is not implemented yet
-- Special draw rules (threefold repetition, 50-move rule) are not implemented yet
-- No user authentication or access control on the Firebase room data
+## 🛠️ Công nghệ sử dụng
 
-## 🔭 Roadmap
+- **Ngôn ngữ:** C# 14 / .NET 10.0
+- **Giao diện:** Windows Presentation Foundation (WPF) với XAML tùy biến cao cấp
+- **Âm thanh:** `NAudio 3.1.0` & `NAudio.Vorbis 3.0.0`
+- **Engine cờ:** Stockfish 16 (UCI Protocol)
+- **Cơ sở dữ liệu Online:** Firebase Realtime Database qua REST API
+- **Quản lý file lớn:** Git Large File Storage (Git LFS)
 
-- [ ] Real-time listener (Firebase Streaming) instead of polling
-- [ ] En passant and draw-rule support
-- [ ] Play-vs-AI mode
-- [ ] Match history logging
-- [ ] In-room chat
-- [ ] Game clock / timer
+---
 
-## 📄 License
+## 📄 Bản quyền & Tác giả
 
-No license has been specified yet for this repository. Add a `LICENSE` file if you'd like to define how others may use this code.
+- **Tác giả:** [Long9boy](https://github.com/Long9boy)
+- **Dự án:** ChessGame PJ - Cờ Vua VIP Pro
+- Mọi đóng góp, báo lỗi (Issues) hoặc Pull Request đều được hoan nghênh tại [GitHub Repository](https://github.com/Long9boy/ChessGame).

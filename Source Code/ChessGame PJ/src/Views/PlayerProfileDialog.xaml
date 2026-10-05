@@ -1,0 +1,178 @@
+<Window x:Class="ChessGame_PJ.Views.PlayerProfileDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Hồ Sơ Người Chơi" Height="620" Width="520"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Icon="/assets/app_icon.png"
+        Background="#141324">
+    <Window.Resources>
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.88"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header (Avatar + Name + Status + Friend Btn) -->
+            <RowDefinition Height="Auto"/>
+            <!-- Stat boxes (Elo, W/L/D, Winrate) -->
+            <RowDefinition Height="Auto"/>
+            <!-- Bot Speedrun Times -->
+            <RowDefinition Height="*"/>
+            <!-- Match History -->
+        </Grid.RowDefinitions>
+
+        <!-- ═══════════════ HEADER ═══════════════ -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Avatar with Online Dot -->
+            <Grid Grid.Column="0" Width="72" Height="72" Margin="0,0,16,0">
+                <Ellipse Width="72" Height="72" Fill="#1E1C35" Stroke="#FFD700" StrokeThickness="2.5"/>
+                <Image x:Name="imgProfileAvatar" Width="66" Height="66" Stretch="UniformToFill">
+                    <Image.Clip>
+                        <EllipseGeometry Center="33,33" RadiusX="32" RadiusY="32"/>
+                    </Image.Clip>
+                </Image>
+                <!-- Online Status Dot -->
+                <Ellipse x:Name="dotStatus" Width="16" Height="16"
+                         Fill="#4CAF50" Stroke="#141324" StrokeThickness="2.5"
+                         HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,2,2"/>
+            </Grid>
+
+            <!-- Info -->
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <TextBlock x:Name="txtDisplayName" Text="Tên người chơi"
+                           Foreground="White" FontSize="20" FontWeight="Bold"
+                           TextTrimming="CharacterEllipsis"/>
+
+                <TextBlock x:Name="txtUsername" Text="@username" Foreground="#8B88AA" FontSize="13" Margin="0,2,0,4"/>
+
+                <!-- Activity Status Text -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock x:Name="lblStatusText" Text="● Trực tuyến  •  Sảnh chờ"
+                               Foreground="#00E676" FontSize="12" FontWeight="SemiBold"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+
+        <!-- ═══════════════ STAT BOXES (ELO & CAREER) ═══════════════ -->
+        <Border Grid.Row="1" Background="#1D1B33" CornerRadius="12" Padding="14,10" Margin="0,0,0,12" BorderThickness="1" BorderBrush="#2D2A4C">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ELO -->
+                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                    <TextBlock Text="👑 ELO" Foreground="#FFD700" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="txtElo" Text="1200" Foreground="#FFD700" FontSize="18" FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <!-- THẮNG -->
+                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                    <TextBlock Text="THẮNG" Foreground="#00E676" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="txtWins" Text="0" Foreground="#00E676" FontSize="18" FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <!-- THUA / HOÀ -->
+                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                    <TextBlock Text="THUA / HOÀ" Foreground="#A5A2C2" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="txtLossDraw" Text="0 / 0" Foreground="White" FontSize="18" FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                </StackPanel>
+
+                <!-- WIN RATE -->
+                <StackPanel Grid.Column="3" HorizontalAlignment="Center">
+                    <TextBlock Text="TỈ LỆ THẮNG" Foreground="#00E5FF" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock x:Name="txtWinRate" Text="0%" Foreground="#00E5FF" FontSize="18" FontWeight="ExtraBold" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ═══════════════ BOT SPEEDRUN RECORDS ═══════════════ -->
+        <Border Grid.Row="2" Background="#1D1B33" CornerRadius="12" Padding="12,8" Margin="0,0,0,12" BorderThickness="1" BorderBrush="#2D2A4C">
+            <StackPanel>
+                <TextBlock Text="🤖 KỶ LỤC PHÁ ĐẢO BOT" Foreground="#A5A2C2" FontSize="11" FontWeight="Bold" Margin="0,0,0,6"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="Dễ" Foreground="#8B88AA" FontSize="11"/>
+                        <TextBlock x:Name="txtBotEasy" Text="Chưa có" Foreground="#00E676" FontSize="13" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1">
+                        <TextBlock Text="Thường" Foreground="#8B88AA" FontSize="11"/>
+                        <TextBlock x:Name="txtBotMedium" Text="Chưa có" Foreground="#FFD700" FontSize="13" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Khó" Foreground="#8B88AA" FontSize="11"/>
+                        <TextBlock x:Name="txtBotHard" Text="Chưa có" Foreground="#FF5252" FontSize="13" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3">
+                        <TextBlock Text="Stockfish" Foreground="#8B88AA" FontSize="11"/>
+                        <TextBlock x:Name="txtBotStockfish" Text="Chưa có" Foreground="#00E5FF" FontSize="13" FontWeight="Bold"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══════════════ MATCH HISTORY ═══════════════ -->
+        <Border Grid.Row="3" Background="#1D1B33" CornerRadius="12" Padding="12" BorderThickness="1" BorderBrush="#2D2A4C">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <DockPanel Grid.Row="0" Margin="0,0,0,8">
+                    <TextBlock Text="📜 LỊCH SỬ ĐẤU GẦN ĐÂY" Foreground="#00E5FF" FontSize="13" FontWeight="Bold"/>
+                    <TextBlock x:Name="lblHistoryCount" Text="(10 trận gần nhất)" Foreground="#8B88AA" FontSize="11" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                </DockPanel>
+
+                <!-- Match List -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="pnlMatchHistory">
+                        <TextBlock x:Name="lblEmptyHistory" Text="Đang tải lịch sử đấu..."
+                                   Foreground="#8B88AA" FontSize="12" FontStyle="Italic"
+                                   HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

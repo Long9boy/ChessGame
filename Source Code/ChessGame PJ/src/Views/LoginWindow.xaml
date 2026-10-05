@@ -1,0 +1,56 @@
+<Window x:Class="ChessGame_PJ.Views.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Đăng Nhập" Height="460" Width="400"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Icon="/assets/app_icon.png"
+        Background="#1E1C2E">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="ĐĂNG NHẬP"
+                   FontSize="20" FontWeight="Bold"
+                   Foreground="#00E5FF"
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,20"/>
+
+        <!-- Username -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,12">
+            <TextBlock Text="Tên tài khoản:" Foreground="#A5A2C2" FontSize="13" Margin="0,0,0,4"/>
+            <TextBox x:Name="txtUsername" Height="38" Style="{StaticResource ModernTextBoxStyle}" KeyDown="Txt_KeyDown"/>
+        </StackPanel>
+
+        <!-- Password -->
+        <StackPanel Grid.Row="2" Margin="0,0,0,12">
+            <TextBlock Text="Mật khẩu:" Foreground="#A5A2C2" FontSize="13" Margin="0,0,0,4"/>
+            <PasswordBox x:Name="txtPassword" Height="38" Style="{StaticResource ModernPasswordBoxStyle}" KeyDown="Txt_KeyDown"/>
+        </StackPanel>
+
+        <!-- Remember Me & Error message -->
+        <StackPanel Grid.Row="3" Margin="0,0,0,12">
+            <CheckBox x:Name="chkRememberMe" Content="Ghi nhớ đăng nhập" Foreground="#A5A2C2" IsChecked="True"/>
+            <TextBlock x:Name="lblError" Foreground="#FF5252" FontSize="12" Margin="0,6,0,0" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Buttons -->
+        <Button x:Name="btnLogin" Grid.Row="4" Content="Đăng Nhập" Height="40"
+                Style="{StaticResource ModernButtonStyle}"
+                Background="#00E676" Foreground="#121212"
+                FontWeight="Bold" FontSize="15"
+                Click="BtnLogin_Click" Margin="0,0,0,8"/>
+
+        <Button x:Name="btnRegister" Grid.Row="5" Content="Chưa có tài khoản? Đăng ký ngay" Height="32"
+                Style="{StaticResource ModernButtonStyle}"
+                Background="Transparent" BorderThickness="0"
+                Foreground="#00E5FF" FontSize="13"
+                Click="BtnRegister_Click"/>
+    </Grid>
+</Window>

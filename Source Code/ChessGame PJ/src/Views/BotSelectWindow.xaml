@@ -1,0 +1,145 @@
+<Window x:Class="ChessGame_PJ.Views.BotSelectWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Chơi Với Máy - Chọn Cấp Độ" Height="585" Width="490"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Icon="/assets/app_icon.png"
+        Background="#1E1C2E">
+    <Grid Margin="20,16,20,16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <TextBlock Grid.Row="0" Text="Chơi vớy Máy"
+                   FontSize="20" FontWeight="ExtraBold"
+                   Foreground="#00E5FF" HorizontalAlignment="Center" Margin="0,0,0,16"/>
+
+        <!-- Difficulty Options Cards (Clickable Cards with Active Glow) -->
+        <StackPanel Grid.Row="1" VerticalAlignment="Center">
+            <!-- Easy -->
+            <Border x:Name="cardEasy" Tag="Easy" Cursor="Hand" CornerRadius="10" Padding="14,10" Margin="0,4,0,4"
+                    Background="#2F2A4A" BorderBrush="#00E676" BorderThickness="2"
+                    MouseLeftButtonUp="Card_MouseLeftButtonUp">
+                <Border.Effect>
+                    <DropShadowEffect Color="#00E676" BlurRadius="14" ShadowDepth="0" Opacity="0.45"/>
+                </Border.Effect>
+                <DockPanel>
+                    <Border x:Name="badgeEasy" DockPanel.Dock="Right" Width="26" Height="26" CornerRadius="13"
+                            Background="#00E676" VerticalAlignment="Center" Margin="10,0,0,0">
+                        <TextBlock Text="✓" Foreground="#121212" FontWeight="Bold" FontSize="14"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="🔴 Cấp độ: DỄ" FontWeight="Bold" FontSize="15" Foreground="#00E676"/>
+                        <TextBlock Text="Ưu tiên ăn quân khi có thể, các nước đi khác ngẫu nhiên."
+                                   FontSize="12" Foreground="#A5A2C2" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Medium -->
+            <Border x:Name="cardMedium" Tag="Medium" Cursor="Hand" CornerRadius="10" Padding="14,10" Margin="0,4,0,4"
+                    Background="#232035" BorderBrush="#3D385E" BorderThickness="1"
+                    MouseLeftButtonUp="Card_MouseLeftButtonUp">
+                <DockPanel>
+                    <Border x:Name="badgeMedium" DockPanel.Dock="Right" Width="26" Height="26" CornerRadius="13"
+                            Background="#FFD700" VerticalAlignment="Center" Margin="10,0,0,0" Visibility="Collapsed">
+                        <TextBlock Text="✓" Foreground="#121212" FontWeight="Bold" FontSize="14"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="🔴 Cấp độ: THƯỜNG" FontWeight="Bold" FontSize="15" Foreground="#FFD700"/>
+                        <TextBlock Text="Cân nhắc lợi thiệt, chạy quân khi bị đe dọa, ăn quân hời."
+                                   FontSize="12" Foreground="#A5A2C2" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Hard -->
+            <Border x:Name="cardHard" Tag="Hard" Cursor="Hand" CornerRadius="10" Padding="14,10" Margin="0,4,0,4"
+                    Background="#232035" BorderBrush="#3D385E" BorderThickness="1"
+                    MouseLeftButtonUp="Card_MouseLeftButtonUp">
+                <DockPanel>
+                    <Border x:Name="badgeHard" DockPanel.Dock="Right" Width="26" Height="26" CornerRadius="13"
+                            Background="#FF5252" VerticalAlignment="Center" Margin="10,0,0,0" Visibility="Collapsed">
+                        <TextBlock Text="✓" Foreground="White" FontWeight="Bold" FontSize="14"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="🔴 Cấp độ: KHÓ" FontWeight="Bold" FontSize="15" Foreground="#FF5252"/>
+                        <TextBlock Text="Tính trước nhiều nước đi (Minimax), bẫy quân người chơi."
+                                   FontSize="12" Foreground="#A5A2C2" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+
+            <!-- Stockfish -->
+            <Border x:Name="cardStockfish" Tag="Stockfish" Cursor="Hand" CornerRadius="10" Padding="14,10" Margin="0,4,0,4"
+                    Background="#232035" BorderBrush="#3D385E" BorderThickness="1"
+                    MouseLeftButtonUp="Card_MouseLeftButtonUp">
+                <DockPanel>
+                    <Border x:Name="badgeStockfish" DockPanel.Dock="Right" Width="26" Height="26" CornerRadius="13"
+                            Background="#00E5FF" VerticalAlignment="Center" Margin="10,0,0,0" Visibility="Collapsed">
+                        <TextBlock Text="✓" Foreground="#121212" FontWeight="Bold" FontSize="14"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <Border DockPanel.Dock="Left" Width="40" Height="40" CornerRadius="8" Margin="0,0,12,0"
+                            BorderBrush="#00E5FF" BorderThickness="1.5" Background="#161424" ClipToBounds="True"
+                            VerticalAlignment="Center">
+                        <Image x:Name="imgStockfishAvatar" Stretch="UniformToFill"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="👑 Cấp độ: STOCKFISH" FontWeight="Bold" FontSize="15" Foreground="#00E5FF"/>
+                        <TextBlock Text="Đại kiện tướng Stockfish 19 đẳng cấp thế giới."
+                                   FontSize="12" Foreground="#A5A2C2" Margin="0,3,0,0"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- Color Selection -->
+        <Border Grid.Row="2" Background="#2A2744" CornerRadius="10" Padding="12,10" Margin="0,12,0,10">
+            <DockPanel>
+                <TextBlock Text="Chọn quân cờ của bạn:" Foreground="White" FontWeight="SemiBold"
+                           VerticalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <RadioButton x:Name="rbWhite" Content="♔ Trắng (Đi trước)" Foreground="#FFD700"
+                                 IsChecked="True" FontWeight="Bold" Margin="0,0,16,0" Cursor="Hand"/>
+                    <RadioButton x:Name="rbBlack" Content="♚ Đen (Đi sau)" Foreground="#A5A2C2"
+                                 FontWeight="Bold" Cursor="Hand"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Move Hints Option -->
+        <Border Grid.Row="3" Background="#2A2744" CornerRadius="10" Padding="12,10" Margin="0,0,0,16">
+            <DockPanel>
+                <TextBlock Text="Gợi ý nước đi:" Foreground="White" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                <CheckBox x:Name="chkMoveHints" IsChecked="True" Cursor="Hand" HorizontalAlignment="Right">
+                    <CheckBox.Content>
+                        <TextBlock Text="💡 Gợi ý nước đi" Foreground="#00E5FF" FontWeight="Bold" FontSize="13"/>
+                    </CheckBox.Content>
+                </CheckBox>
+            </DockPanel>
+        </Border>
+
+        <!-- Buttons -->
+        <DockPanel Grid.Row="4">
+            <Button Content="Quay lại" Width="100" Height="40"
+                    Style="{StaticResource ModernButtonStyle}"
+                    Background="#54507A" Foreground="White"
+                    Click="BtnCancel_Click"/>
+            <Button Content="⚔️ Bắt Đầu Trận Đấu" Height="40" Width="190"
+                    HorizontalAlignment="Right"
+                    Style="{StaticResource ModernButtonStyle}"
+                    Background="#00E676" Foreground="#121212" FontWeight="Bold" FontSize="15"
+                    Click="BtnStart_Click"/>
+        </DockPanel>
+    </Grid>
+</Window>

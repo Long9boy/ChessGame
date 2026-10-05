@@ -1,0 +1,22 @@
+## Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+publish/
+
+## Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.dtbcache*
+
+## Python cache & temporary test scripts
+__pycache__/
+*.pyc
+scratch_render.ps1
+scratch_height.ps1
+test_comparison.png
+test_height.png

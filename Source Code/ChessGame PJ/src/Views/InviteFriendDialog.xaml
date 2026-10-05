@@ -1,0 +1,75 @@
+<Window x:Class="ChessGame_PJ.Views.InviteFriendDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mời Bạn Bè Vào Phòng" Height="420" Width="400"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Icon="/assets/app_icon.png"
+        Background="#181628">
+    <Window.Resources>
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.88"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="18">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <DockPanel Grid.Row="0" Margin="0,0,0,12">
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock Text="👥 MỜI BẠN BÈ VÀO PHÒNG" Foreground="#00E5FF" FontSize="16" FontWeight="ExtraBold"/>
+                <TextBlock x:Name="lblRoomCode" Text="Mã phòng: ------" Foreground="#FFD700" FontSize="12" FontWeight="SemiBold" Margin="0,2,0,0"/>
+            </StackPanel>
+            <Button Content="✕" Width="28" Height="28" HorizontalAlignment="Right" VerticalAlignment="Top"
+                    Background="Transparent" BorderThickness="0" Foreground="#A5A2C2" FontSize="16"
+                    FontWeight="Bold" Cursor="Hand" Click="BtnClose_Click"/>
+        </DockPanel>
+
+        <!-- Friends List -->
+        <Border Grid.Row="1" Background="#211E36" CornerRadius="10" Padding="8">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="pnlFriendsList">
+                    <TextBlock x:Name="lblStatus" Text="Đang tải danh sách bạn bè..."
+                               Foreground="#8B88AA" FontSize="12" FontStyle="Italic"
+                               HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Footer / Copy Room code -->
+        <DockPanel Grid.Row="2" Margin="0,12,0,0">
+            <Button x:Name="btnCopyCode" Content="📋 Sao Chép Mã Phòng" Height="34" Width="170"
+                    Style="{StaticResource ModernButtonStyle}"
+                    Background="#2A2744" Foreground="#00E5FF" FontWeight="Bold" FontSize="12"
+                    Click="BtnCopyCode_Click"/>
+            <Button Content="Đóng" Height="34" Width="90" HorizontalAlignment="Right"
+                    Style="{StaticResource ModernButtonStyle}"
+                    Background="#54507A" Foreground="White" FontWeight="Bold" FontSize="12"
+                    Click="BtnClose_Click"/>
+        </DockPanel>
+    </Grid>
+</Window>

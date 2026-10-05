@@ -1,31 +1,45 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net10.0-windows</TargetFramework>
-    <RootNamespace>ChessGame_PJ</RootNamespace>
-    <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net10.0-windows</TargetFramework>
+		<RootNamespace>ChessGame_PJ</RootNamespace>
+		<AssemblyName>Cờ vua vip pro</AssemblyName>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<ApplicationIcon>assets\app_icon.ico</ApplicationIcon>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<!-- Cấu hình xuất bản 1 file EXE duy nhất, tự chứa Runtime (.NET Runtime + Assets nhúng bên trong) -->
+	<PropertyGroup>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+		<SelfContained>true</SelfContained>
+		<PublishSingleFile>true</PublishSingleFile>
+		<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+		<EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+		<DebugType>none</DebugType>
+		<DebugSymbols>false</DebugSymbols>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="assets\textures\*.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<!-- Icons và ảnh PNG nhúng dưới dạng WPF Resource (truy cập qua pack URI) -->
+		<Resource Include="assets\app_icon.ico" />
+		<Resource Include="assets\app_icon.png" />
+		<Resource Include="assets\textures\**\*.png" />
+		<Resource Include="assets\textures\**\*.jpg" />
 
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+		<!-- File âm thanh và Engine nhúng dưới dạng EmbeddedResource để chạy 1 file EXE duy nhất không cần thư mục ngoài -->
+		<EmbeddedResource Include="assets\sounds\*.ogg" />
+		<EmbeddedResource Include="assets\sounds\voice\**\*.wav" />
+		<EmbeddedResource Include="assets\engine\stockfish.exe" />
+		<!-- Video nền Sảnh chờ (lặp 30s) nhúng vào EXE, tự giải nén ra LocalAppData khi chạy -->
+		<EmbeddedResource Include="assets\videos\*.mp4" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="NAudio" Version="3.1.0" />
+	  <PackageReference Include="NAudio.Vorbis" Version="3.0.0" />
+	</ItemGroup>
 
 </Project>

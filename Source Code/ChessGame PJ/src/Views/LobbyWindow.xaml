@@ -1,0 +1,1248 @@
+<Window x:Class="ChessGame_PJ.Views.LobbyWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Chess Game - Sảnh Chờ" Height="682" Width="1024"
+        MinHeight="682" MinWidth="1024"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanMinimize"
+        Icon="/assets/app_icon.png"
+        Background="#0D0B1A">
+    <Window.Resources>
+
+        <!-- Pill Button (Login / Logout) -->
+        <Style x:Key="PillButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#182032"/>
+            <Setter Property="BorderBrush" Value="#323D5A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#C5CBE2"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="pb" Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14" Padding="18,5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="pb" Property="Background" Value="#25324D"/>
+                                <Setter TargetName="pb" Property="BorderBrush" Value="#50628E"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="pb" Property="Background" Value="#121826"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Header Image Button Style (Bạn bè, Cài đặt) - Sáng lên khi hover giống Login/Logout -->
+        <Style x:Key="HeaderImageBtnStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border x:Name="imgBorder" CornerRadius="9" ClipToBounds="True">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <Border x:Name="hoverOverlay" CornerRadius="9"
+                                    Background="Transparent"
+                                    BorderBrush="Transparent"
+                                    BorderThickness="1.2"
+                                    IsHitTestVisible="False"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="hoverOverlay" Property="Background" Value="#25FFFFFF"/>
+                                <Setter TargetName="hoverOverlay" Property="BorderBrush" Value="#50628E"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="hoverOverlay" Property="Background" Value="#25000000"/>
+                                <Setter TargetName="hoverOverlay" Property="BorderBrush" Value="#323D5A"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Image Card Button (cho 4 nút game dùng ảnh PNG với hiệu ứng nổi 3D khi hover) -->
+        <Style x:Key="ImageCardButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="rootGrid" RenderTransformOrigin="0.5,0.5">
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="cardScale" ScaleX="1.0" ScaleY="1.0"/>
+                                    <TranslateTransform x:Name="cardTrans" X="0" Y="0"/>
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                            <Grid.Effect>
+                                <DropShadowEffect x:Name="cardShadow" Color="#000000" BlurRadius="12"
+                                                  ShadowDepth="4" Opacity="0.45" Direction="270"/>
+                            </Grid.Effect>
+                            <Border x:Name="cardBorder" CornerRadius="14" ClipToBounds="True" Background="#161F32">
+                                <ContentPresenter/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Panel.ZIndex" Value="50"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="cardTrans"
+                                                             Storyboard.TargetProperty="Y"
+                                                             To="-8" Duration="0:0:0.18">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="cardScale"
+                                                             Storyboard.TargetProperty="ScaleX"
+                                                             To="1.04" Duration="0:0:0.18">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="cardScale"
+                                                             Storyboard.TargetProperty="ScaleY"
+                                                             To="1.04" Duration="0:0:0.18">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="cardShadow"
+                                                             Storyboard.TargetProperty="ShadowDepth"
+                                                             To="18" Duration="0:0:0.18"/>
+                                            <DoubleAnimation Storyboard.TargetName="cardShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="28" Duration="0:0:0.18"/>
+                                            <DoubleAnimation Storyboard.TargetName="cardShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0.80" Duration="0:0:0.18"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="cardTrans"
+                                                             Storyboard.TargetProperty="Y"
+                                                             To="0" Duration="0:0:0.22">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="cardScale"
+                                                             Storyboard.TargetProperty="ScaleX"
+                                                             To="1.0" Duration="0:0:0.22">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="cardScale"
+                                                             Storyboard.TargetProperty="ScaleY"
+                                                             To="1.0" Duration="0:0:0.22">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="cardShadow"
+                                                             Storyboard.TargetProperty="ShadowDepth"
+                                                             To="4" Duration="0:0:0.22"/>
+                                            <DoubleAnimation Storyboard.TargetName="cardShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="12" Duration="0:0:0.22"/>
+                                            <DoubleAnimation Storyboard.TargetName="cardShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0.45" Duration="0:0:0.22"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="rootGrid" Property="Opacity" Value="0.88"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Image Banner Button (cho nút BXH full-width với hiệu ứng nổi 3D khi hover) -->
+        <Style x:Key="ImageBannerButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid x:Name="bannerGrid" RenderTransformOrigin="0.5,0.5">
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform x:Name="bannerScale" ScaleX="1.0" ScaleY="1.0"/>
+                                    <TranslateTransform x:Name="bannerTrans" X="0" Y="0"/>
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                            <Grid.Effect>
+                                <DropShadowEffect x:Name="bannerShadow" Color="#000000" BlurRadius="12"
+                                                  ShadowDepth="4" Opacity="0.45" Direction="270"/>
+                            </Grid.Effect>
+                            <Border x:Name="bannerBorder" CornerRadius="14" ClipToBounds="True" Background="#161F32">
+                                <ContentPresenter/>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Panel.ZIndex" Value="50"/>
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="bannerTrans"
+                                                             Storyboard.TargetProperty="Y"
+                                                             To="-5" Duration="0:0:0.18">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="bannerScale"
+                                                             Storyboard.TargetProperty="ScaleX"
+                                                             To="1.02" Duration="0:0:0.18">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="bannerScale"
+                                                             Storyboard.TargetProperty="ScaleY"
+                                                             To="1.04" Duration="0:0:0.18">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="bannerShadow"
+                                                             Storyboard.TargetProperty="ShadowDepth"
+                                                             To="16" Duration="0:0:0.18"/>
+                                            <DoubleAnimation Storyboard.TargetName="bannerShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="24" Duration="0:0:0.18"/>
+                                            <DoubleAnimation Storyboard.TargetName="bannerShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0.80" Duration="0:0:0.18"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetName="bannerTrans"
+                                                             Storyboard.TargetProperty="Y"
+                                                             To="0" Duration="0:0:0.22">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="bannerScale"
+                                                             Storyboard.TargetProperty="ScaleX"
+                                                             To="1.0" Duration="0:0:0.22">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="bannerScale"
+                                                             Storyboard.TargetProperty="ScaleY"
+                                                             To="1.0" Duration="0:0:0.22">
+                                                <DoubleAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut"/>
+                                                </DoubleAnimation.EasingFunction>
+                                            </DoubleAnimation>
+                                            <DoubleAnimation Storyboard.TargetName="bannerShadow"
+                                                             Storyboard.TargetProperty="ShadowDepth"
+                                                             To="4" Duration="0:0:0.22"/>
+                                            <DoubleAnimation Storyboard.TargetName="bannerShadow"
+                                                             Storyboard.TargetProperty="BlurRadius"
+                                                             To="12" Duration="0:0:0.22"/>
+                                            <DoubleAnimation Storyboard.TargetName="bannerShadow"
+                                                             Storyboard.TargetProperty="Opacity"
+                                                             To="0.45" Duration="0:0:0.22"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="bannerGrid" Property="Opacity" Value="0.88"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Standard Modern Button Style -->
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="10"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.88"/>
+                                <Setter Property="Cursor" Value="Hand"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Opacity" Value="0.7"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Selectable Card RadioButton Style (Không có nút tròn, sáng viền vàng và phát sáng khi được chọn) -->
+        <Style x:Key="CardRadioButtonStyle" TargetType="RadioButton">
+            <Setter Property="Background" Value="#172036"/>
+            <Setter Property="BorderBrush" Value="#2A3858"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border x:Name="cardBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="cardBorder" Property="Background" Value="#202D4C"/>
+                                <Setter TargetName="cardBorder" Property="BorderBrush" Value="#4A6598"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="cardBorder" Property="Background" Value="#223052"/>
+                                <Setter TargetName="cardBorder" Property="BorderBrush" Value="#FFD700"/>
+                                <Setter TargetName="cardBorder" Property="BorderThickness" Value="2"/>
+                                <Setter TargetName="cardBorder" Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="#FFD700" BlurRadius="14" ShadowDepth="0" Opacity="0.6"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Modern TextBox Style -->
+        <Style x:Key="ModernTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#1E1C35"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="CaretBrush" Value="White"/>
+            <Setter Property="BorderBrush" Value="#54507A"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer Margin="0" x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Thin Modern ScrollBar Thumb for Settings/Profile ScrollViewers -->
+        <Style x:Key="LobbyScrollThumb" TargetType="{x:Type Thumb}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border x:Name="thumbBorder" Background="#54507A" CornerRadius="3" Margin="1,0"/>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="thumbBorder" Property="Background" Value="#00E5FF"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="true">
+                                <Setter TargetName="thumbBorder" Property="Background" Value="#FFD700"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LobbyScrollBarStyle" TargetType="{x:Type ScrollBar}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Style.Triggers>
+                <Trigger Property="Orientation" Value="Vertical">
+                    <Setter Property="Width" Value="6"/>
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="{x:Type ScrollBar}">
+                                <Grid Background="Transparent">
+                                    <Track x:Name="PART_Track" IsDirectionReversed="true">
+                                        <Track.Thumb>
+                                            <Thumb Style="{StaticResource LobbyScrollThumb}"/>
+                                        </Track.Thumb>
+                                    </Track>
+                                </Grid>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <!-- 1. Background Image Fallback (frame 0 của video) - luôn hiển thị bên dưới, ngăn 100% màn hình đen -->
+        <Image x:Name="imgBackground" Stretch="UniformToFill" Opacity="1.0" IsHitTestVisible="False"/>
+
+        <!-- 1b. Video nền 30s với cơ chế Dual MediaElement Cross-Fade mượt mà 100% -->
+        <Grid x:Name="gridVideoBackground" IsHitTestVisible="False">
+            <MediaElement x:Name="meBackgroundB" Stretch="UniformToFill" Opacity="1.0"
+                          LoadedBehavior="Manual" UnloadedBehavior="Manual"
+                          IsMuted="True" Volume="0" IsHitTestVisible="False"/>
+            <MediaElement x:Name="meBackgroundA" Stretch="UniformToFill" Opacity="1.0"
+                          LoadedBehavior="Manual" UnloadedBehavior="Manual"
+                          IsMuted="True" Volume="0" IsHitTestVisible="False"/>
+        </Grid>
+
+        <!-- Dark overlay nhẹ để giữ độ sáng rực rỡ mà UI vẫn sắc nét -->
+        <Rectangle Fill="#18080610" IsHitTestVisible="False"/>
+
+        <!-- 2. Main Layout Grid (CacheMode BitmapCache giúp GPU vẽ 1 lần thay vì tính lại 360 lần bóng đổ mỗi giây) -->
+        <Grid Margin="30,16,30,16">
+            <Grid.CacheMode>
+                <BitmapCache EnableClearType="True" RenderAtScale="1"/>
+            </Grid.CacheMode>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- Header -->
+                <RowDefinition Height="*"/>
+                <!-- Content -->
+            </Grid.RowDefinitions>
+
+            <!-- ═══════════════ HEADER ═══════════════ -->
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo + Title -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Image x:Name="imgLogoKing" Width="46" Height="46" Margin="0,0,12,0"
+                           Stretch="Uniform" VerticalAlignment="Center"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="Cờ Vua Vjp Pro" FontSize="30" FontWeight="ExtraBold"
+                                   Foreground="#E8C87A" FontFamily="Segoe UI">
+                            <TextBlock.Effect>
+                                <DropShadowEffect Color="#C8A840" BlurRadius="14" ShadowDepth="0" Opacity="0.55"/>
+                            </TextBlock.Effect>
+                        </TextBlock>
+                        <StackPanel Orientation="Horizontal" Margin="2,2,0,0">
+                            <TextBlock Text="Siêu trí tuệ server Nam cực" FontSize="16" Foreground="#9EA8BA"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Header Right: Friends Dropdown Button + Settings Button (image only, no text) -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <!-- Friends Dropdown Button (kèm huy hiệu số lời mời kết bạn đang chờ) -->
+                    <Grid Margin="0,0,10,0">
+                        <Button x:Name="btnFriendsDropdown"
+                                Style="{StaticResource HeaderImageBtnStyle}"
+                                Click="BtnFriendsDropdown_Click" ToolTip="Danh sách bạn bè">
+                            <Image Source="/assets/textures/btn_ban_be.png" Stretch="Uniform" Height="38"/>
+                        </Button>
+                        <Border x:Name="dotFriendRequestBadge" Visibility="Collapsed"
+                                Background="#FF5252" CornerRadius="8" MinWidth="16" Height="16"
+                                Padding="3,0" HorizontalAlignment="Right" VerticalAlignment="Top"
+                                Margin="0,-3,-3,0" IsHitTestVisible="False">
+                            <TextBlock x:Name="lblFriendRequestBadge" Text="0" Foreground="White"
+                                       FontSize="10" FontWeight="Bold" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+                    </Grid>
+
+                    <!-- Settings Button (Matches Friends button height) -->
+                    <Button x:Name="btnSettings"
+                            Style="{StaticResource HeaderImageBtnStyle}"
+                            Click="BtnSettings_Click" ToolTip="Cài đặt">
+                        <Image Source="/assets/textures/btn_cai_dat.png" Stretch="Uniform" Height="38"/>
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- ═══════════════ CONTENT (Left + Right) ═══════════════ -->
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <!-- Left panel: profile + 4 buttons + BXH -->
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="18"/>
+                    <!-- gap -->
+                    <ColumnDefinition Width="330"/>
+                    <!-- Right leaderboard panel -->
+                </Grid.ColumnDefinitions>
+
+                <!-- ─────── LEFT PANEL ─────── -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Profile -->
+                        <RowDefinition Height="14"/>
+                        <!-- spacing -->
+                        <RowDefinition Height="*"/>
+                        <!-- Buttons -->
+                    </Grid.RowDefinitions>
+
+                    <!-- PROFILE AREA -->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal"
+                                HorizontalAlignment="Left" VerticalAlignment="Center"
+                                Margin="6,0,0,0" Cursor="Hand"
+                                ToolTip="Nhấp chuột phải để xem hồ sơ &amp; lịch sử đấu"
+                                MouseRightButtonUp="ProfileArea_MouseRightButtonUp">
+                        <!-- Avatar circle + online dot -->
+                        <Grid Width="70" Height="70" Margin="0,0,14,0" Cursor="Hand"
+                              MouseLeftButtonUp="BorderAvatar_MouseLeftButtonUp"
+                              ToolTip="Bấm để xem thông tin cá nhân &amp; đổi ảnh đại diện">
+                            <Ellipse Width="70" Height="70"
+                                     Stroke="#3A4A6A" StrokeThickness="2" Fill="#18243A"/>
+                            <Image x:Name="imgAvatar" Width="64" Height="64"
+                                   Stretch="UniformToFill"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <Image.Clip>
+                                    <EllipseGeometry Center="32,32" RadiusX="30" RadiusY="30"/>
+                                </Image.Clip>
+                            </Image>
+                            <!-- Online green dot -->
+                            <Ellipse Width="14" Height="14"
+                                     Fill="#4CAF50" Stroke="#0D0B1A" StrokeThickness="2.5"
+                                     HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                     Margin="0,0,3,3"/>
+                        </Grid>
+
+                        <!-- Name / ELO / Buttons -->
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock x:Name="txtPlayerName" Text="playername:playername"
+                                       Foreground="White" FontSize="20" FontWeight="Bold"
+                                       TextTrimming="CharacterEllipsis" MaxWidth="340"/>
+                            <!-- ELO -->
+                            <StackPanel Orientation="Horizontal" Margin="0,5,0,10">
+                                <TextBlock Text="👑 " Foreground="#FFD700" FontSize="13" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="lblElo" Text="ELO 1324"
+                                           Foreground="#FFD700" FontSize="13" FontWeight="SemiBold"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <!-- Login / Logout side-by-side -->
+                            <StackPanel Orientation="Horizontal">
+                                <Button x:Name="btnAuth" Style="{StaticResource PillButtonStyle}"
+                                        MinWidth="80" Height="30" Margin="0,0,10,0"
+                                        Click="BtnAuth_Click">
+                                    <TextBlock x:Name="txtBtnAuth" Text="Login"/>
+                                </Button>
+                                <Button x:Name="btnLogout" Style="{StaticResource PillButtonStyle}"
+                                        MinWidth="80" Height="30"
+                                        Visibility="Collapsed"
+                                        Click="BtnLogout_Click">
+                                    <TextBlock Text="Logout"/>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- GAME MODE BUTTONS 2x2 + BXH -->
+                    <!-- ↕ Kéo splitter dòng trong VS Designer để thay đổi chiều cao nút -->
+                    <!-- ↔ Kéo splitter cột trong VS Designer để thay đổi chiều rộng nút  -->
+                    <Grid Grid.Row="2" Margin="62,0,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="130"/>
+                            <!-- ← đổi số này để thay chiều cao nút hàng 1 -->
+                            <RowDefinition Height="10"/>
+                            <!-- khoảng cách giữa 2 hàng -->
+                            <RowDefinition Height="130"/>
+                            <!-- ← đổi số này để thay chiều cao nút hàng 2 -->
+                            <RowDefinition Height="10"/>
+                            <!-- khoảng cách trước BXH -->
+                            <RowDefinition Height="52"/>
+                            <!-- ← đổi số này để thay chiều cao nút BXH -->
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4.5*"/>
+                            <!-- cột trái tự co giãn -->
+                            <ColumnDefinition Width="10"/>
+                            <!-- khoảng cách giữa 2 cột -->
+                            <ColumnDefinition Width="4.5*"/>
+                            <!-- cột phải tự co giãn -->
+                        </Grid.ColumnDefinitions>
+
+                        <!-- 1. Tìm trận -->
+                        <Button x:Name="btnMatchmaking"
+                                Grid.Row="0" Grid.Column="0"
+                                Style="{StaticResource ImageCardButtonStyle}"
+                                Click="BtnMatchmaking_Click" Margin="0,0,4,0">
+                            <Image x:Name="imgBtnTimTran" Stretch="Fill"/>
+                        </Button>
+
+                        <!-- 2. Chơi offline -->
+                        <Button x:Name="btnPlayBot"
+                                Grid.Row="0" Grid.Column="2"
+                                Style="{StaticResource ImageCardButtonStyle}"
+                                Click="BtnPlayBot_Click" Margin="4,0,0,0">
+                            <Image x:Name="imgBtnChoiOffline" Stretch="Fill"/>
+                        </Button>
+
+                        <!-- 3. Tạo phòng -->
+                        <Button x:Name="btnCreateRoom"
+                                Grid.Row="2" Grid.Column="0"
+                                Style="{StaticResource ImageCardButtonStyle}"
+                                Click="BtnCreateRoom_Click" Margin="0,0,4,0">
+                            <Image x:Name="imgBtnTaoPhong" Stretch="Fill"/>
+                        </Button>
+
+                        <!-- 4. Tham gia phòng -->
+                        <Button x:Name="btnJoinRoom"
+                                Grid.Row="2" Grid.Column="2"
+                                Style="{StaticResource ImageCardButtonStyle}"
+                                Click="BtnJoinRoom_Click" Margin="4,0,0,0">
+                            <Image x:Name="imgBtnThamGia" Stretch="Fill"/>
+                        </Button>
+
+                        <!-- 5. Bảng xếp hạng (full width) -->
+                        <Button x:Name="btnLeaderboard"
+                                Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="3"
+                                Style="{StaticResource ImageBannerButtonStyle}"
+                                Click="BtnLeaderboard_Click">
+                            <Image x:Name="imgBtnBxh" Stretch="Fill" Height="52"/>
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                <!-- ─────── RIGHT PANEL ─────── -->
+                <!-- ↕ Kéo splitter dòng trong VS Designer để thay đổi chiều cao panel -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="225"/> <!-- ← đổi số này để thay chiều cao panel Top 3 ELO -->
+                        <RowDefinition Height="12"/>  <!-- khoảng cách giữa 2 panel -->
+                        <RowDefinition Height="230"/> <!-- ← đổi số này để thay chiều cao panel Bot (4 khung) -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Top 3 ELO Card -->
+                    <Border Grid.Row="0"
+                            Background="#F50D1324" CornerRadius="16"
+                            BorderBrush="#1E2840" BorderThickness="1.5"
+                            Padding="14,12">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="3" Opacity="0.5"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <DockPanel Grid.Row="0" Margin="0,0,0,8">
+                                <TextBlock Text="👑 " FontSize="14" Foreground="#FFD700" VerticalAlignment="Center"/>
+                                <TextBlock Text="Top 3 Players" Foreground="White" FontSize="14"
+                                           FontWeight="Bold" VerticalAlignment="Center"/>
+                                <TextBlock Text=" (ELO cao nhất)" Foreground="#8E9AA8"
+                                           FontSize="11" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <StackPanel x:Name="pnlTop3Elo" Grid.Row="1" VerticalAlignment="Center">
+                                <TextBlock Text="Đang tải dữ liệu..." Foreground="#8E9AA8"
+                                           FontSize="12" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Top 1 mỗi cấp độ Bot Card -->
+                    <Border Grid.Row="2"
+                            Background="#F50D1324" CornerRadius="16"
+                            BorderBrush="#1E2840" BorderThickness="1.5"
+                            Padding="14,12">
+                        <Border.Effect>
+                            <DropShadowEffect Color="#000000" BlurRadius="16" ShadowDepth="3" Opacity="0.5"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <DockPanel Grid.Row="0" Margin="0,0,0,8">
+                                <TextBlock Text="⏱ " FontSize="14" Foreground="#00E5FF" VerticalAlignment="Center"/>
+                                <TextBlock Text="Top 1 mỗi cấp độ" Foreground="White" FontSize="13"
+                                           FontWeight="Bold" VerticalAlignment="Center"/>
+                                <TextBlock Text=" (Chơi máy)" Foreground="#8E9AA8"
+                                           FontSize="11" VerticalAlignment="Center"/>
+                            </DockPanel>
+                            <StackPanel x:Name="pnlBotRecords" Grid.Row="1" VerticalAlignment="Center">
+                                <TextBlock Text="Đang tải kỷ lục..." Foreground="#8E9AA8"
+                                           FontSize="12" HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!-- ═══════════════ MODAL OVERLAYS ═══════════════ -->
+
+        <!-- Backdrop -->
+        <Rectangle x:Name="popupOverlay" Visibility="Collapsed"
+                   Fill="#99000000"
+                   MouseLeftButtonDown="PopupOverlay_Click"/>
+
+
+        <!-- PROFILE POPUP -->
+        <Border x:Name="pnlProfilePopup" Visibility="Collapsed"
+                Background="#EE14192D" CornerRadius="16"
+                BorderBrush="#FFD700" BorderThickness="1.5"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Width="680" MaxHeight="720" Padding="22">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" BlurRadius="28" ShadowDepth="4" Opacity="0.8"/>
+            </Border.Effect>
+            <StackPanel>
+                <!-- Title row -->
+                <DockPanel Margin="0,0,0,16">
+                    <TextBlock Text="👤 THÔNG TIN NGƯỜI CHƠI" Foreground="#FFD700"
+                               FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <Button HorizontalAlignment="Right" Width="28" Height="28"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="Transparent" Foreground="#A5A2C2"
+                            FontSize="16" FontWeight="Bold" Click="BtnCloseProfile_Click">✕</Button>
+                </DockPanel>
+
+                <!-- Two-column: left info, right avatar picker -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="210"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- LEFT: Name card + Stats + Bot records -->
+                    <StackPanel Grid.Column="0" Margin="0,0,14,0">
+
+                        <!-- Name + avatar row -->
+                        <Border Background="#1C233D" CornerRadius="12" Padding="14" Margin="0,0,0,12">
+                            <DockPanel>
+                                <Grid Width="56" Height="56" Margin="0,0,14,0" VerticalAlignment="Center">
+                                    <Ellipse Width="56" Height="56" Fill="#2B365C" Stroke="#FFD700" StrokeThickness="2"/>
+                                    <Image x:Name="imgProfileAvatarLarge" Width="52" Height="52"
+                                           Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image.Clip>
+                                            <EllipseGeometry Center="26,26" RadiusX="25" RadiusY="25"/>
+                                        </Image.Clip>
+                                    </Image>
+                                </Grid>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock x:Name="lblProfileName" Text="Long9boy"
+                                               Foreground="White" FontSize="18" FontWeight="Bold"/>
+                                    <TextBlock x:Name="lblProfileUsername" Text="@username"
+                                               Foreground="#8E9AA8" FontSize="12" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </Border>
+
+                        <!-- Stats grid: 5 columns (ELO, Thắng, Hòa, Thua, Tỉ lệ) -->
+                        <Grid Margin="0,0,0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Background="#1C233D" CornerRadius="8" Padding="6,10" Margin="0,0,4,0">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="👑 ELO" Foreground="#FFD700" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="lblProfileElo" Text="1324" Foreground="White" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="1" Background="#1C233D" CornerRadius="8" Padding="6,10" Margin="0,0,4,0">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="🏆 Thắng" Foreground="#00E676" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="lblProfileWins" Text="0" Foreground="White" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="2" Background="#1C233D" CornerRadius="8" Padding="6,10" Margin="0,0,4,0">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="🤝 Hòa" Foreground="#FFD700" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="lblProfileDraws" Text="0" Foreground="White" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="3" Background="#1C233D" CornerRadius="8" Padding="6,10" Margin="0,0,4,0">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="❌ Thua" Foreground="#FF5252" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="lblProfileLosses" Text="0" Foreground="White" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Grid.Column="4" Background="#1C233D" CornerRadius="8" Padding="6,10">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="📈 Tỉ lệ" Foreground="#00E5FF" FontSize="10" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="lblProfileWinrate" Text="0%" Foreground="White" FontSize="15" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Bot records -->
+                        <Border x:Name="pnlProfileBotRecord" Background="#1C233D" CornerRadius="10"
+                                Padding="12,10" Visibility="Collapsed">
+                            <StackPanel>
+                                <TextBlock Text="⚡ Kỷ lục phá đảo máy (thời gian ngắn nhất):"
+                                           Foreground="#FFD700" FontSize="12" FontWeight="Bold" Margin="0,0,0,6"/>
+                                <TextBlock x:Name="lblProfileBotRecord" Text=""
+                                           Foreground="#C8D2EE" FontSize="12" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- RIGHT: Avatar picker -->
+                    <Border Grid.Column="1" Background="#1C233D" CornerRadius="12" Padding="12">
+                        <StackPanel>
+                            <TextBlock Text="🖼 CHỌN AVATAR" Foreground="#FFD700"
+                                       FontSize="12" FontWeight="Bold" Margin="0,0,0,10"
+                                       HorizontalAlignment="Center"/>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="160">
+                                <ScrollViewer.Resources>
+                                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource LobbyScrollBarStyle}"/>
+                                </ScrollViewer.Resources>
+                                <WrapPanel x:Name="pnlAvatarPickerGrid" HorizontalAlignment="Center"/>
+                            </ScrollViewer>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- Match History -->
+                <Border Background="#1C233D" CornerRadius="12" Padding="14,10" Margin="0,12,0,0">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,8">
+                            <TextBlock Text="📜 LỊCH SỬ ĐẤU GẦN ĐÂY" Foreground="#00E5FF" FontSize="13" FontWeight="Bold"/>
+                            <TextBlock Text="(10 trận gần nhất)" Foreground="#8E9AA8" FontSize="11"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </DockPanel>
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="220">
+                            <ScrollViewer.Resources>
+                                <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource LobbyScrollBarStyle}"/>
+                            </ScrollViewer.Resources>
+                            <StackPanel x:Name="pnlProfileMatchHistory">
+                                <TextBlock x:Name="lblProfileEmptyHistory" Text="Đang tải lịch sử đấu..."
+                                           Foreground="#8E9AA8" FontSize="12" FontStyle="Italic"
+                                           HorizontalAlignment="Center" Margin="0,16,0,0"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Border>
+
+        <!-- SETTINGS POPUP -->
+        <Border x:Name="pnlSettings" Visibility="Collapsed"
+                Background="#F414192D" CornerRadius="16"
+                BorderBrush="#54507A" BorderThickness="1.5"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Margin="0,40,30,0" Width="460" MaxHeight="620" Padding="20">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" BlurRadius="24" ShadowDepth="4" Opacity="0.75"/>
+            </Border.Effect>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <ScrollViewer.Resources>
+                    <Style TargetType="{x:Type ScrollBar}" BasedOn="{StaticResource LobbyScrollBarStyle}"/>
+                </ScrollViewer.Resources>
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,16">
+                        <TextBlock Text="⚙ CÀI ĐẶT HỆ THỐNG" Foreground="White"
+                                   FontSize="15" FontWeight="Bold" VerticalAlignment="Center"/>
+                        <Button HorizontalAlignment="Right" Width="28" Height="28"
+                                Style="{StaticResource ModernButtonStyle}"
+                                Background="Transparent" Foreground="#A5A2C2"
+                                FontSize="16" Click="BtnCloseSettings_Click">✕</Button>
+                    </DockPanel>
+                    
+                    <!-- Volume -->
+                    <TextBlock Text="🔊 Mức âm lượng" Foreground="White" FontSize="13"
+                               FontWeight="SemiBold" Margin="0,0,0,8"/>
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="45"/>
+                        </Grid.ColumnDefinitions>
+                        <Slider x:Name="sliderVolume" Grid.Column="0"
+                                Minimum="0" Maximum="100" Value="70"
+                                VerticalAlignment="Center"
+                                ValueChanged="SliderVolume_ValueChanged"/>
+                        <TextBlock x:Name="lblVolume" Grid.Column="1" Text="70%"
+                                   Foreground="#00E5FF" FontSize="13" FontWeight="Bold"
+                                   HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- Flip Board For Black -->
+                    <Border Background="#2A2744" CornerRadius="10" Padding="12,10" Margin="0,0,0,16"
+                            Cursor="Hand" MouseLeftButtonUp="FlipBoardRow_MouseLeftButtonUp">
+                        <DockPanel Background="Transparent">
+                            <TextBlock Text="🔄 Đảo ngược bàn cờ ở quân đen" Foreground="White" FontSize="13"
+                                       FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap"/>
+                            <CheckBox x:Name="chkFlipBoardForBlack" Cursor="Hand" IsHitTestVisible="False"
+                                      HorizontalAlignment="Right" VerticalAlignment="Center"
+                                      Margin="10,0,0,0"
+                                      Checked="ChkFlipBoardForBlack_Changed"
+                                      Unchecked="ChkFlipBoardForBlack_Changed"/>
+                        </DockPanel>
+                    </Border>
+
+                    <!-- Board Color -->
+                    <TextBlock Text="🎨 Màu sắc bàn cờ" Foreground="White" FontSize="13"
+                               FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <StackPanel Margin="0,0,0,16">
+                        <RadioButton x:Name="rdoBoardBrownGold" GroupName="BoardColor"
+                                     Style="{StaticResource CardRadioButtonStyle}"
+                                     Checked="RdoBoardColor_Checked">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Border Width="22" Height="22" Background="#F0D9B5" CornerRadius="4" Margin="0,0,5,0"
+                                            BorderBrush="#8B7355" BorderThickness="1"/>
+                                    <Border Width="22" Height="22" Background="#B58863" CornerRadius="4"
+                                            BorderBrush="#6B4226" BorderThickness="1"/>
+                                </StackPanel>
+                                <TextBlock Text="Nâu + Vàng nhạt (Mặc định)" Foreground="White" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </RadioButton>
+
+                        <RadioButton x:Name="rdoBoardBlackWhite" GroupName="BoardColor"
+                                     Style="{StaticResource CardRadioButtonStyle}"
+                                     Checked="RdoBoardColor_Checked">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Border Width="22" Height="22" Background="#F0F0F0" CornerRadius="4" Margin="0,0,5,0"
+                                            BorderBrush="#C0C0C0" BorderThickness="1"/>
+                                    <Border Width="22" Height="22" Background="#404040" CornerRadius="4"
+                                            BorderBrush="#202020" BorderThickness="1"/>
+                                </StackPanel>
+                                <TextBlock Text="Trắng + Đen" Foreground="White" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </RadioButton>
+
+                        <RadioButton x:Name="rdoBoardBlueWhite" GroupName="BoardColor"
+                                     Style="{StaticResource CardRadioButtonStyle}"
+                                     Checked="RdoBoardColor_Checked">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Border Width="22" Height="22" Background="#DEF0FF" CornerRadius="4" Margin="0,0,5,0"
+                                            BorderBrush="#87CEEB" BorderThickness="1"/>
+                                    <Border Width="22" Height="22" Background="#4B8AC4" CornerRadius="4"
+                                            BorderBrush="#2A6496" BorderThickness="1"/>
+                                </StackPanel>
+                                <TextBlock Text="Xanh + Trắng" Foreground="White" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </DockPanel>
+                        </RadioButton>
+                    </StackPanel>
+
+                    <!-- Piece Set Selection (4 options with large previews) -->
+                    <TextBlock Text="♟ Bộ quân cờ" Foreground="White" FontSize="13"
+                               FontWeight="SemiBold" Margin="0,0,0,10"/>
+                    <StackPanel Margin="0,0,0,8">
+                        <!-- Set 1: Classic -->
+                        <RadioButton x:Name="rdoPieceClassic" GroupName="PieceStyle"
+                                     Style="{StaticResource CardRadioButtonStyle}"
+                                     Checked="RdoPieceStyle_Checked">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevClassic1" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Vua trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevClassic2" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Hậu trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2">
+                                        <Image x:Name="imgPrevClassic3" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Mã đen"/>
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Classic" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                                    <TextBlock Text="Mặc định" FontSize="11" Foreground="#8E9AA8" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </RadioButton>
+
+                        <!-- Set 2: Royal -->
+                        <RadioButton x:Name="rdoPieceRoyal" GroupName="PieceStyle"
+                                     Style="{StaticResource CardRadioButtonStyle}"
+                                     Checked="RdoPieceStyle_Checked">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevRoyal1" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Vua trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevRoyal2" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Hậu trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2">
+                                        <Image x:Name="imgPrevRoyal3" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Mã đen"/>
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Royal" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                                    <TextBlock Text="Hoàng gia" FontSize="11" Foreground="#8E9AA8" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </RadioButton>
+
+                        <!-- Set 3: Angle vs Demon -->
+                        <RadioButton x:Name="rdoPieceAngleDemon" GroupName="PieceStyle"
+                                     Style="{StaticResource CardRadioButtonStyle}"
+                                     Checked="RdoPieceStyle_Checked">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevAngle1" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Vua trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevAngle2" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Hậu trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2">
+                                        <Image x:Name="imgPrevAngle3" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Mã đen"/>
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Angle vs Demon" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                                    <TextBlock Text="Thiên thần &amp; Ác quỷ 1" FontSize="11" Foreground="#8E9AA8" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </RadioButton>
+
+                        <!-- Set 4: Angle vs Demon 2 -->
+                        <RadioButton x:Name="rdoPieceAngleDemon2" GroupName="PieceStyle"
+                                     Style="{StaticResource CardRadioButtonStyle}"
+                                     Checked="RdoPieceStyle_Checked">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevAngle2_1" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Vua trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevAngle2_2" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Hậu trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2">
+                                        <Image x:Name="imgPrevAngle2_3" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Mã đen"/>
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Angle vs Demon 2" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                                    <TextBlock Text="Thiên thần &amp; Ác quỷ 2" FontSize="11" Foreground="#8E9AA8" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </RadioButton>
+
+                        <!-- Set 5: Dragon Age / Long tộc -->
+                        <RadioButton x:Name="rdoPieceDragonAge" GroupName="PieceStyle"
+                                     Style="{StaticResource CardRadioButtonStyle}"
+                                     Checked="RdoPieceStyle_Checked">
+                            <DockPanel LastChildFill="True">
+                                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" VerticalAlignment="Center">
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevDragon1" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Vua trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2" Margin="0,0,6,0">
+                                        <Image x:Name="imgPrevDragon2" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Hậu trắng"/>
+                                    </Border>
+                                    <Border Background="#0C1322" CornerRadius="6" Padding="2">
+                                        <Image x:Name="imgPrevDragon3" Width="46" Height="46" RenderOptions.BitmapScalingMode="HighQuality" ToolTip="Mã đen"/>
+                                    </Border>
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Dragon Age" FontWeight="Bold" FontSize="14" Foreground="White"/>
+                                    <TextBlock Text="Long tộc" FontSize="11" Foreground="#8E9AA8" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DockPanel>
+                        </RadioButton>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- JOIN ROOM POPUP -->
+        <Border x:Name="pnlJoinPopup" Visibility="Collapsed"
+                Background="#EE14192D" CornerRadius="16"
+                BorderBrush="#5A3A1A" BorderThickness="1.5"
+                HorizontalAlignment="Center" VerticalAlignment="Center"
+                Width="380" Padding="24">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" BlurRadius="24" ShadowDepth="4" Opacity="0.75"/>
+            </Border.Effect>
+            <StackPanel>
+                <DockPanel Margin="0,0,0,16">
+                    <TextBlock Text="🚪 THAM GIA PHÒNG" Foreground="#FFD700"
+                               FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                    <Button HorizontalAlignment="Right" Width="28" Height="28"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="Transparent" Foreground="#A5A2C2"
+                            FontSize="16" Click="BtnCloseJoin_Click">✕</Button>
+                </DockPanel>
+                <TextBlock Text="Nhập mã ID phòng thi đấu:" Foreground="#A5A2C2"
+                           FontSize="13" Margin="0,0,0,8"/>
+                <TextBox x:Name="txtRoomId" Height="44"
+                         Style="{StaticResource ModernTextBoxStyle}"
+                         FontSize="16" FontWeight="SemiBold" Text="Nhập ID: "
+                         TextChanged="TxtRoomId_TextChanged"
+                         KeyDown="TxtRoomId_KeyDown"
+                         PreviewMouseDown="TxtRoomId_PreviewMouseDown"
+                         Margin="0,0,0,16"/>
+                <Button x:Name="btnConfirmJoin" Height="44"
+                        Style="{StaticResource ModernButtonStyle}"
+                        Background="#D97706" Foreground="White"
+                        FontSize="15" FontWeight="Bold"
+                        Click="BtnConfirmJoin_Click">
+                    <TextBlock Text="VÀO PHÒNG" VerticalAlignment="Center"/>
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!-- ═══════════════ FRIENDS DROPDOWN POPUP ═══════════════ -->
+        <Border x:Name="pnlFriendsDropdown" Visibility="Collapsed"
+                Background="#EE14192D" CornerRadius="16"
+                BorderBrush="#323D5A" BorderThickness="1.5"
+                HorizontalAlignment="Right" VerticalAlignment="Top"
+                Margin="0,58,25,0" Width="360" MaxHeight="520" Padding="16"
+                Panel.ZIndex="100">
+            <Border.Effect>
+                <DropShadowEffect Color="#000000" BlurRadius="24" ShadowDepth="4" Opacity="0.85"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header -->
+                <DockPanel Grid.Row="0" Margin="0,0,0,12">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="👥 BẠN BÈ" Foreground="#00E5FF" FontSize="16" FontWeight="Bold"/>
+                        <TextBlock x:Name="lblFriendsCount" Text=" (0 online)" Foreground="#A5A2C2" FontSize="12" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                    </StackPanel>
+                    <Button HorizontalAlignment="Right" Width="26" Height="26"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="Transparent" Foreground="#A5A2C2"
+                            FontSize="15" Click="BtnCloseFriends_Click">✕</Button>
+                </DockPanel>
+
+                <!-- Pending Friend Requests (lời mời kết bạn đang chờ mình chấp nhận) -->
+                <Border x:Name="pnlFriendRequestsSection" Grid.Row="1" Visibility="Collapsed"
+                        Background="#241E1A" CornerRadius="10" Padding="10,8" Margin="0,0,0,12"
+                        BorderBrush="#FFD700" BorderThickness="1">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,6">
+                            <TextBlock Text="🔔 LỜI MỜI KẾT BẠN" Foreground="#FFD700" FontSize="12" FontWeight="Bold"/>
+                            <TextBlock x:Name="lblFriendRequestsCount" Text="(0)" Foreground="#FFD700" FontSize="12"
+                                       HorizontalAlignment="Right" VerticalAlignment="Center" Margin="6,0,0,0"/>
+                        </DockPanel>
+                        <StackPanel x:Name="pnlFriendRequestsContainer"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Add Friend Input -->
+                <Grid Grid.Row="2" Margin="0,0,0,12">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox x:Name="txtAddFriendUsername" Height="36"
+                             Style="{StaticResource ModernTextBoxStyle}"
+                             FontSize="13" Padding="8,0" Margin="0,0,8,0"
+                             KeyDown="TxtAddFriendUsername_KeyDown"/>
+                    <Button x:Name="btnAddFriend" Grid.Column="1" Content="+ Thêm" Width="70" Height="36"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="#00E676" Foreground="#121212" FontWeight="Bold" FontSize="12"
+                            Click="BtnAddFriend_Click"/>
+                </Grid>
+
+                <!-- Friends List Scroll Area -->
+                <Border Grid.Row="3" Background="#181628" CornerRadius="10" Padding="6" MinHeight="180" MaxHeight="340">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel x:Name="pnlFriendsContainer">
+                            <TextBlock x:Name="lblFriendsEmpty" Text="Đang tải danh sách bạn bè..."
+                                       Foreground="#8B88AA" FontSize="12" FontStyle="Italic"
+                                       HorizontalAlignment="Center" Margin="0,20,0,0"/>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ═══════════════ ROOM INVITE POPUP NOTIFICATION ═══════════════ -->
+        <Border x:Name="pnlInvitePopup" Visibility="Collapsed"
+                Background="#EE14192D" CornerRadius="16"
+                BorderBrush="#00E5FF" BorderThickness="2"
+                HorizontalAlignment="Center" VerticalAlignment="Top"
+                Margin="0,20,0,0" Width="420" Padding="18"
+                Panel.ZIndex="150">
+            <Border.Effect>
+                <DropShadowEffect Color="#00E5FF" BlurRadius="20" ShadowDepth="0" Opacity="0.5"/>
+            </Border.Effect>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                    <Border Width="42" Height="42" CornerRadius="21" Background="#24223E" Margin="0,0,12,0">
+                        <Image x:Name="imgInviteFromAvatar" Width="40" Height="40" Stretch="UniformToFill">
+                            <Image.Clip>
+                                <EllipseGeometry Center="20,20" RadiusX="19" RadiusY="19"/>
+                            </Image.Clip>
+                        </Image>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock x:Name="lblInviteFromUser" Text="Người bạn đang mời bạn vào phòng!"
+                                   Foreground="White" FontWeight="Bold" FontSize="14"/>
+                        <TextBlock x:Name="lblInviteRoomId" Text="Mã phòng: ------"
+                                   Foreground="#FFD700" FontSize="12" Margin="0,2,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+                <DockPanel Grid.Row="1">
+                    <Button Content="Bỏ qua" Width="100" Height="34"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="#54507A" Foreground="White" FontWeight="Bold"
+                            Click="BtnDeclineInvite_Click"/>
+                    <Button Content="Vào Phòng Ngay" Width="150" Height="34" HorizontalAlignment="Right"
+                            Style="{StaticResource ModernButtonStyle}"
+                            Background="#00E676" Foreground="#121212" FontWeight="Bold"
+                            Click="BtnAcceptInvite_Click"/>
+                </DockPanel>
+            </Grid>
+        </Border>
+
+    </Grid>
+</Window>
