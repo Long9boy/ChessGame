@@ -8,6 +8,7 @@ namespace ChessGame_PJ
         public bool Success { get; set; } = false;
         public bool NeedsPromotion { get; set; } = false;
         public bool IsCastle { get; set; } = false;
+        public bool IsEnPassant { get; set; } = false;
         public string CapturedPiece { get; set; } = "";
         public string CheckedColor { get; set; } = "";
         public bool IsCheckmate { get; set; } = false;
@@ -25,6 +26,9 @@ namespace ChessGame_PJ
         public bool WhiteRookHMoved = false;
         public bool BlackRookAMoved = false;
         public bool BlackRookHMoved = false;
+
+        // En passant target square (the square skipped by a 2-step pawn advance on the immediately preceding move)
+        public (int row, int col)? EnPassantTarget { get; set; } = null;
 
         public ChessGame()
         {
@@ -53,6 +57,7 @@ namespace ChessGame_PJ
 
             WhiteKingMoved = BlackKingMoved = false;
             WhiteRookAMoved = WhiteRookHMoved = BlackRookAMoved = BlackRookHMoved = false;
+            EnPassantTarget = null;
         }
 
         public string[,] GetBoardState() => boardState;
@@ -159,6 +164,14 @@ namespace ChessGame_PJ
                             {
                                 moves.Add((r, c));
                             }
+                            else if (EnPassantTarget.HasValue && r == EnPassantTarget.Value.row && c == EnPassantTarget.Value.col)
+                            {
+                                // En passant capture: destination is empty, enemy pawn sits beside at (row, c)
+                                if (InBounds(row, c) && !string.IsNullOrEmpty(board[row, c]) && ColorOf(board[row, c]) != color && PieceType(board[row, c]) == "Pawn")
+                                {
+                                    moves.Add((r, c));
+                                }
+                            }
                         }
                         break;
                     }
@@ -231,13 +244,25 @@ namespace ChessGame_PJ
             string piece = boardState[row, col];
             if (string.IsNullOrEmpty(piece)) return result;
             string color = ColorOf(piece);
+            string type = PieceType(piece);
 
             var pseudo = GetPseudoMoves(row, col, boardState);
             foreach (var (r, c) in pseudo)
             {
                 var clone = CloneBoard(boardState);
+                bool isEp = type == "Pawn" &&
+                            EnPassantTarget.HasValue &&
+                            r == EnPassantTarget.Value.row &&
+                            c == EnPassantTarget.Value.col &&
+                            string.IsNullOrEmpty(boardState[r, c]);
+
                 clone[r, c] = clone[row, col];
                 clone[row, col] = "";
+                if (isEp)
+                {
+                    clone[row, c] = "";
+                }
+
                 if (!IsInCheck(color, clone))
                     result.Add((r, c));
             }
@@ -320,11 +345,21 @@ namespace ChessGame_PJ
             }
 
             bool isCastle = type == "King" && Math.Abs(toCol - fromCol) == 2;
+            bool isEnPassant = type == "Pawn" &&
+                               EnPassantTarget.HasValue &&
+                               toRow == EnPassantTarget.Value.row &&
+                               toCol == EnPassantTarget.Value.col &&
+                               string.IsNullOrEmpty(boardState[toRow, toCol]);
 
-            string capturedPiece = boardState[toRow, toCol];
+            string capturedPiece = isEnPassant ? boardState[fromRow, toCol] : boardState[toRow, toCol];
 
             boardState[toRow, toCol] = piece;
             boardState[fromRow, fromCol] = "";
+
+            if (isEnPassant)
+            {
+                boardState[fromRow, toCol] = "";
+            }
 
             if (type == "Pawn" && toRow == lastRank && promotionChoice != null)
             {
@@ -343,6 +378,16 @@ namespace ChessGame_PJ
                     boardState[fromRow, 3] = boardState[fromRow, 0];
                     boardState[fromRow, 0] = "";
                 }
+            }
+
+            // Update en passant target for the NEXT turn
+            if (type == "Pawn" && Math.Abs(toRow - fromRow) == 2)
+            {
+                EnPassantTarget = ((fromRow + toRow) / 2, fromCol);
+            }
+            else
+            {
+                EnPassantTarget = null;
             }
 
             if (type == "King")
@@ -369,6 +414,7 @@ namespace ChessGame_PJ
 
             result.Success = true;
             result.IsCastle = isCastle;
+            result.IsEnPassant = isEnPassant;
             result.CapturedPiece = capturedPiece ?? "";
 
             string opponentColor = Opponent(color);
@@ -397,6 +443,7 @@ namespace ChessGame_PJ
             clone.WhiteRookHMoved = this.WhiteRookHMoved;
             clone.BlackRookAMoved = this.BlackRookAMoved;
             clone.BlackRookHMoved = this.BlackRookHMoved;
+            clone.EnPassantTarget = this.EnPassantTarget;
             return clone;
         }
 

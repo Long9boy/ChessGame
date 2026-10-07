@@ -60,7 +60,16 @@ namespace ChessGame_PJ.Core.AI
             sb.Append(castling.ToString());
 
             // 4. En passant, halfmove clock, fullmove counter
-            sb.Append(" - 0 1");
+            if (game.EnPassantTarget.HasValue)
+            {
+                char epCol = (char)('a' + game.EnPassantTarget.Value.col);
+                char epRank = (char)('0' + (8 - game.EnPassantTarget.Value.row));
+                sb.Append($" {epCol}{epRank} 0 1");
+            }
+            else
+            {
+                sb.Append(" - 0 1");
+            }
 
             return sb.ToString();
         }
@@ -173,6 +182,18 @@ namespace ChessGame_PJ.Core.AI
                     }
                 }
             }
+
+            if (parts.Length > 3 && parts[3] != "-")
+            {
+                string ep = parts[3];
+                if (ep.Length == 2 && ep[0] >= 'a' && ep[0] <= 'h' && ep[1] >= '1' && ep[1] <= '8')
+                {
+                    int epC = ep[0] - 'a';
+                    int epR = 8 - (ep[1] - '0');
+                    game.EnPassantTarget = (epR, epC);
+                }
+            }
+
             return game;
         }
     }

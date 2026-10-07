@@ -22,7 +22,9 @@ namespace ChessGame_PJ.Core.AI
             foreach (var m in legalMoves)
             {
                 string targetPiece = board[m.toR, m.toC];
-                if (!string.IsNullOrEmpty(targetPiece) && ChessGame.ColorOf(targetPiece) != botColor)
+                bool isCapture = (!string.IsNullOrEmpty(targetPiece) && ChessGame.ColorOf(targetPiece) != botColor) ||
+                    (ChessGame.PieceType(board[m.fromR, m.fromC]) == "Pawn" && game.EnPassantTarget.HasValue && m.toR == game.EnPassantTarget.Value.row && m.toC == game.EnPassantTarget.Value.col);
+                if (isCapture)
                 {
                     captureMoves.Add(m);
                 }

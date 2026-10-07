@@ -367,6 +367,10 @@ namespace ChessGame_PJ.Core.AI
                 }
             }
             sb.Append('|').Append(turn);
+            if (game.EnPassantTarget.HasValue)
+            {
+                sb.Append('|').Append(game.EnPassantTarget.Value.row).Append(',').Append(game.EnPassantTarget.Value.col);
+            }
             return sb.ToString();
         }
 
@@ -405,7 +409,9 @@ namespace ChessGame_PJ.Core.AI
                 .Where(m =>
                 {
                     string target = board[m.toR, m.toC];
-                    return !string.IsNullOrEmpty(target) && ChessGame.ColorOf(target) == oppColor;
+                    if (!string.IsNullOrEmpty(target) && ChessGame.ColorOf(target) == oppColor) return true;
+                    if (ChessGame.PieceType(board[m.fromR, m.fromC]) == "Pawn" && game.EnPassantTarget.HasValue && m.toR == game.EnPassantTarget.Value.row && m.toC == game.EnPassantTarget.Value.col) return true;
+                    return false;
                 })
                 .ToList();
 
@@ -424,7 +430,8 @@ namespace ChessGame_PJ.Core.AI
                 // anywhere near alpha even in the best case, don't bother
                 // recursing into it.
                 string target = board[move.toR, move.toC];
-                int captureValue = PieceValues.GetValueOrDefault(ChessGame.PieceType(target), 0);
+                bool isEp = string.IsNullOrEmpty(target) && ChessGame.PieceType(board[move.fromR, move.fromC]) == "Pawn" && game.EnPassantTarget.HasValue && move.toR == game.EnPassantTarget.Value.row && move.toC == game.EnPassantTarget.Value.col;
+                int captureValue = isEp ? PieceValues["Pawn"] : PieceValues.GetValueOrDefault(ChessGame.PieceType(target), 0);
                 if (standPat + captureValue + DeltaMargin < alpha)
                 {
                     continue;
@@ -478,9 +485,10 @@ namespace ChessGame_PJ.Core.AI
                     string moving = board[m.fromR, m.fromC];
 
                     // MVV-LVA (Most Valuable Victim - Least Valuable Aggressor)
-                    if (!string.IsNullOrEmpty(target) && ChessGame.ColorOf(target) == oppColor)
+                    bool isEp = string.IsNullOrEmpty(target) && ChessGame.PieceType(moving) == "Pawn" && game.EnPassantTarget.HasValue && m.toR == game.EnPassantTarget.Value.row && m.toC == game.EnPassantTarget.Value.col;
+                    if ((!string.IsNullOrEmpty(target) && ChessGame.ColorOf(target) == oppColor) || isEp)
                     {
-                        int targetVal = PieceValues.GetValueOrDefault(ChessGame.PieceType(target), 0);
+                        int targetVal = isEp ? PieceValues["Pawn"] : PieceValues.GetValueOrDefault(ChessGame.PieceType(target), 0);
                         int movingVal = PieceValues.GetValueOrDefault(ChessGame.PieceType(moving), 0);
                         score += 10000 + (targetVal * 10 - movingVal);
                     }

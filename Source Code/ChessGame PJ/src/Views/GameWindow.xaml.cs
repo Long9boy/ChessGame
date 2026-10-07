@@ -1627,10 +1627,13 @@ namespace ChessGame_PJ.Views
                 if (showMoveHints && (isCustomMode || currentTurn == myColor))
                 {
                     var legalMoves = chessGame.GetLegalMoves(selectedRow, selectedCol);
+                    string selPiece = boardState[selectedRow, selectedCol];
+                    bool isPawnSel = ChessGame.PieceType(selPiece) == "Pawn";
                     foreach (var (mr, mc) in legalMoves)
                     {
                         string targetPiece = boardState[mr, mc];
-                        if (string.IsNullOrEmpty(targetPiece))
+                        bool isEnPassantCapture = isPawnSel && chessGame.EnPassantTarget.HasValue && mr == chessGame.EnPassantTarget.Value.row && mc == chessGame.EnPassantTarget.Value.col;
+                        if (string.IsNullOrEmpty(targetPiece) && !isEnPassantCapture)
                         {
                             cellDots[mr, mc].Visibility = Visibility.Visible;
                         }
@@ -1742,7 +1745,8 @@ namespace ChessGame_PJ.Views
                 bool oppIsCapture = false;
                 if (isOpponentMove && oToR >= 0 && oToR < 8 && oToC >= 0 && oToC < 8)
                 {
-                    oppIsCapture = !string.IsNullOrEmpty(chessGame.GetBoardState()[oToR, oToC]);
+                    oppIsCapture = !string.IsNullOrEmpty(chessGame.GetBoardState()[oToR, oToC])
+                        || (chessGame.EnPassantTarget.HasValue && oToR == chessGame.EnPassantTarget.Value.row && oToC == chessGame.EnPassantTarget.Value.col && oFromR >= 0 && oFromC >= 0 && chessGame.GetBoardState()[oFromR, oFromC]?.EndsWith("Pawn") == true);
                 }
 
                 lastRoom = room;
@@ -2244,6 +2248,11 @@ namespace ChessGame_PJ.Views
             chessGame.BlackRookAMoved = room.bRookAMoved;
             chessGame.BlackRookHMoved = room.bRookHMoved;
 
+            if (room.epRow >= 0 && room.epCol >= 0)
+                chessGame.EnPassantTarget = (room.epRow, room.epCol);
+            else
+                chessGame.EnPassantTarget = null;
+
             if (room.lastFromRow >= 0 && room.lastFromCol >= 0 && room.lastToRow >= 0 && room.lastToCol >= 0)
             {
                 lastFromRow = room.lastFromRow;
@@ -2526,10 +2535,13 @@ namespace ChessGame_PJ.Views
                 if (showMoveHints && !isMatchmaking && room.turn == myColor)
                 {
                     var legalMoves = chessGame.GetLegalMoves(selectedRow, selectedCol);
+                    string selPiece = boardState[selectedRow, selectedCol];
+                    bool isPawnSel = ChessGame.PieceType(selPiece) == "Pawn";
                     foreach (var (mr, mc) in legalMoves)
                     {
                         string targetPiece = boardState[mr, mc];
-                        if (string.IsNullOrEmpty(targetPiece))
+                        bool isEnPassantCapture = isPawnSel && chessGame.EnPassantTarget.HasValue && mr == chessGame.EnPassantTarget.Value.row && mc == chessGame.EnPassantTarget.Value.col;
+                        if (string.IsNullOrEmpty(targetPiece) && !isEnPassantCapture)
                         {
                             cellDots[mr, mc].Visibility = Visibility.Visible;
                         }
@@ -3058,6 +3070,8 @@ namespace ChessGame_PJ.Views
             if (pieceImg != null)
                 await AnimatePieceMoveAsync(fromRow, fromCol, toRow, toCol, pieceImg);
 
+            UpdateBoardUI();
+
             // Play move sound: check -> warning, capture -> replace, normal -> place
             bool pvpIsCapture = !string.IsNullOrEmpty(moveResult.CapturedPiece);
             bool pvpIsCheck = !string.IsNullOrEmpty(moveResult.CheckedColor) || moveResult.IsCheckmate;
@@ -3161,6 +3175,8 @@ namespace ChessGame_PJ.Views
                 ["wRookHMoved"] = chessGame.WhiteRookHMoved,
                 ["bRookAMoved"] = chessGame.BlackRookAMoved,
                 ["bRookHMoved"] = chessGame.BlackRookHMoved,
+                ["epRow"] = chessGame.EnPassantTarget?.row ?? -1,
+                ["epCol"] = chessGame.EnPassantTarget?.col ?? -1,
                 ["updatedAt"] = now
             };
 

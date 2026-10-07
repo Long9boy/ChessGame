@@ -46,9 +46,10 @@ namespace ChessGame_PJ.Core.AI
                 int targetVal = GetPieceValue(targetPiece);
 
                 // 1. Capture profit
-                if (!string.IsNullOrEmpty(targetPiece) && ChessGame.ColorOf(targetPiece) == oppColor)
+                bool isEp = string.IsNullOrEmpty(targetPiece) && ChessGame.PieceType(movingPiece) == "Pawn" && game.EnPassantTarget.HasValue && move.toR == game.EnPassantTarget.Value.row && move.toC == game.EnPassantTarget.Value.col;
+                if ((!string.IsNullOrEmpty(targetPiece) && ChessGame.ColorOf(targetPiece) == oppColor) || isEp)
                 {
-                    score += targetVal;
+                    score += isEp ? 100 : targetVal;
                 }
 
                 // 2. Was moving piece currently in danger?

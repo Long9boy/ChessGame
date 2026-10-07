@@ -26,6 +26,9 @@ namespace ChessGame_PJ
         public bool bRookAMoved { get; set; } = false;
         public bool bRookHMoved { get; set; } = false;
 
+        public int epRow { get; set; } = -1;
+        public int epCol { get; set; } = -1;
+
         public int selRow { get; set; } = -1;
         public int selCol { get; set; } = -1;
         public List<string> legalMoves { get; set; } = new List<string>();
